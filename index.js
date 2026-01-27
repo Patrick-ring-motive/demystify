@@ -123,13 +123,13 @@ function OutputLine(parent) {
   this.__items = [];
 }
 
-OutputLine.prototype.clone_empty = function() {
+OutputLine.prototype.clone_empty = function $clone_empty() {
   var line = new OutputLine(this.__parent);
   line.set_indent(this.__indent_count, this.__alignment_count);
   return line;
 };
 
-OutputLine.prototype.item = function(index) {
+OutputLine.prototype.item = function $item(index) {
   if (index < 0) {
     return this.__items[this.__items.length + index];
   } else {
@@ -137,7 +137,7 @@ OutputLine.prototype.item = function(index) {
   }
 };
 
-OutputLine.prototype.has_match = function(pattern) {
+OutputLine.prototype.has_match = function $has_match(pattern) {
   for (var lastCheckedOutput = this.__items.length - 1; lastCheckedOutput >= 0; lastCheckedOutput--) {
     if (this.__items[lastCheckedOutput].match(pattern)) {
       return true;
@@ -146,7 +146,7 @@ OutputLine.prototype.has_match = function(pattern) {
   return false;
 };
 
-OutputLine.prototype.set_indent = function(indent, alignment) {
+OutputLine.prototype.set_indent = function $set_indent(indent, alignment) {
   if (this.is_empty()) {
     this.__indent_count = indent || 0;
     this.__alignment_count = alignment || 0;
@@ -154,7 +154,7 @@ OutputLine.prototype.set_indent = function(indent, alignment) {
   }
 };
 
-OutputLine.prototype._set_wrap_point = function() {
+OutputLine.prototype._set_wrap_point = function $_set_wrap_point() {
   if (this.__parent.wrap_line_length) {
     this.__wrap_point_index = this.__items.length;
     this.__wrap_point_character_count = this.__character_count;
@@ -163,13 +163,13 @@ OutputLine.prototype._set_wrap_point = function() {
   }
 };
 
-OutputLine.prototype._should_wrap = function() {
+OutputLine.prototype._should_wrap = function $_should_wrap() {
   return this.__wrap_point_index &&
     this.__character_count > this.__parent.wrap_line_length &&
     this.__wrap_point_character_count > this.__parent.next_line.__character_count;
 };
 
-OutputLine.prototype._allow_wrap = function() {
+OutputLine.prototype._allow_wrap = function $_allow_wrap() {
   if (this._should_wrap()) {
     this.__parent.add_new_line();
     var next = this.__parent.current_line;
@@ -189,11 +189,11 @@ OutputLine.prototype._allow_wrap = function() {
   return false;
 };
 
-OutputLine.prototype.is_empty = function() {
+OutputLine.prototype.is_empty = function $is_empty() {
   return this.__items.length === 0;
 };
 
-OutputLine.prototype.last = function() {
+OutputLine.prototype.last = function $last() {
   if (!this.is_empty()) {
     return this.__items[this.__items.length - 1];
   } else {
@@ -201,7 +201,7 @@ OutputLine.prototype.last = function() {
   }
 };
 
-OutputLine.prototype.push = function(item) {
+OutputLine.prototype.push = function $push(item) {
   this.__items.push(item);
   var last_newline_index = item.lastIndexOf('\n');
   if (last_newline_index !== -1) {
@@ -211,7 +211,7 @@ OutputLine.prototype.push = function(item) {
   }
 };
 
-OutputLine.prototype.pop = function() {
+OutputLine.prototype.pop = function $pop() {
   var item = null;
   if (!this.is_empty()) {
     item = this.__items.pop();
@@ -221,26 +221,26 @@ OutputLine.prototype.pop = function() {
 };
 
 
-OutputLine.prototype._remove_indent = function() {
+OutputLine.prototype._remove_indent = function $_remove_indent() {
   if (this.__indent_count > 0) {
     this.__indent_count -= 1;
     this.__character_count -= this.__parent.indent_size;
   }
 };
 
-OutputLine.prototype._remove_wrap_indent = function() {
+OutputLine.prototype._remove_wrap_indent = function $_remove_wrap_indent() {
   if (this.__wrap_point_indent_count > 0) {
     this.__wrap_point_indent_count -= 1;
   }
 };
-OutputLine.prototype.trim = function() {
+OutputLine.prototype.trim = function $trim() {
   while (this.last() === ' ') {
     this.__items.pop();
     this.__character_count -= 1;
   }
 };
 
-OutputLine.prototype.toString = function() {
+OutputLine.prototype.toString = function $toString() {
   var result = '';
   if (this.is_empty()) {
     if (this.__parent.indent_empty_lines) {
@@ -271,7 +271,7 @@ function IndentStringCache(options, baseIndentString) {
   this.__base_string_length = baseIndentString.length;
 }
 
-IndentStringCache.prototype.get_indent_size = function(indent, column) {
+IndentStringCache.prototype.get_indent_size = function $get_indent_size(indent, column) {
   var result = this.__base_string_length;
   column = column || 0;
   if (indent < 0) {
@@ -282,7 +282,7 @@ IndentStringCache.prototype.get_indent_size = function(indent, column) {
   return result;
 };
 
-IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
+IndentStringCache.prototype.get_indent_string = function $get_indent_string(indent_level, column) {
   var result = this.__base_string;
   column = column || 0;
   if (indent_level < 0) {
@@ -295,13 +295,13 @@ IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
   return result;
 };
 
-IndentStringCache.prototype.__ensure_cache = function(column) {
+IndentStringCache.prototype.__ensure_cache = function $__ensure_cache(column) {
   while (column >= this.__cache.length) {
     this.__add_column();
   }
 };
 
-IndentStringCache.prototype.__add_column = function() {
+IndentStringCache.prototype.__add_column = function $__add_column() {
   var column = this.__cache.length;
   var indent = 0;
   var result = '';
@@ -335,29 +335,29 @@ function Output(options, baseIndentString) {
   this.__add_outputline();
 }
 
-Output.prototype.__add_outputline = function() {
+Output.prototype.__add_outputline = function $__add_outputline() {
   this.previous_line = this.current_line;
   this.current_line = this.next_line.clone_empty();
   this.__lines.push(this.current_line);
 };
 
-Output.prototype.get_line_number = function() {
+Output.prototype.get_line_number = function $get_line_number() {
   return this.__lines.length;
 };
 
-Output.prototype.get_indent_string = function(indent, column) {
+Output.prototype.get_indent_string = function $get_indent_string(indent, column) {
   return this.__indent_cache.get_indent_string(indent, column);
 };
 
-Output.prototype.get_indent_size = function(indent, column) {
+Output.prototype.get_indent_size = function $get_indent_size(indent, column) {
   return this.__indent_cache.get_indent_size(indent, column);
 };
 
-Output.prototype.is_empty = function() {
+Output.prototype.is_empty = function $is_empty() {
   return !this.previous_line && this.current_line.is_empty();
 };
 
-Output.prototype.add_new_line = function(force_newline) {
+Output.prototype.add_new_line = function $add_new_line(force_newline) {
   // never newline at the start of file
   // otherwise, newline only if we didn't just add one or we're forced
   if (this.is_empty() ||
@@ -373,7 +373,7 @@ Output.prototype.add_new_line = function(force_newline) {
   return true;
 };
 
-Output.prototype.get_code = function(eol) {
+Output.prototype.get_code = function $get_code(eol) {
   this.trim(true);
 
   // handle some edge cases where the last tokens
@@ -398,11 +398,11 @@ Output.prototype.get_code = function(eol) {
   return sweet_code;
 };
 
-Output.prototype.set_wrap_point = function() {
+Output.prototype.set_wrap_point = function $set_wrap_point() {
   this.current_line._set_wrap_point();
 };
 
-Output.prototype.set_indent = function(indent, alignment) {
+Output.prototype.set_indent = function $set_indent(indent, alignment) {
   indent = indent || 0;
   alignment = alignment || 0;
 
@@ -419,7 +419,7 @@ Output.prototype.set_indent = function(indent, alignment) {
   return false;
 };
 
-Output.prototype.add_raw_token = function(token) {
+Output.prototype.add_raw_token = function $add_raw_token(token) {
   for (var x = 0; x < token.newlines; x++) {
     this.__add_outputline();
   }
@@ -431,7 +431,7 @@ Output.prototype.add_raw_token = function(token) {
   this.previous_token_wrapped = false;
 };
 
-Output.prototype.add_token = function(printable_token) {
+Output.prototype.add_token = function $add_token(printable_token) {
   this.__add_space_before_token();
   this.current_line.push(printable_token);
   this.space_before_token = false;
@@ -439,7 +439,7 @@ Output.prototype.add_token = function(printable_token) {
   this.previous_token_wrapped = this.current_line._allow_wrap();
 };
 
-Output.prototype.__add_space_before_token = function() {
+Output.prototype.__add_space_before_token = function $__add_space_before_token() {
   if (this.space_before_token && !this.just_added_newline()) {
     if (!this.non_breaking_space) {
       this.set_wrap_point();
@@ -448,7 +448,7 @@ Output.prototype.__add_space_before_token = function() {
   }
 };
 
-Output.prototype.remove_indent = function(index) {
+Output.prototype.remove_indent = function $remove_indent(index) {
   var output_length = this.__lines.length;
   while (index < output_length) {
     this.__lines[index]._remove_indent();
@@ -457,7 +457,7 @@ Output.prototype.remove_indent = function(index) {
   this.current_line._remove_wrap_indent();
 };
 
-Output.prototype.trim = function(eat_newlines) {
+Output.prototype.trim = function $trim(eat_newlines) {
   eat_newlines = (eat_newlines === undefined) ? false : eat_newlines;
 
   this.current_line.trim();
@@ -473,16 +473,16 @@ Output.prototype.trim = function(eat_newlines) {
     this.__lines[this.__lines.length - 2] : null;
 };
 
-Output.prototype.just_added_newline = function() {
+Output.prototype.just_added_newline = function $just_added_newline() {
   return this.current_line.is_empty();
 };
 
-Output.prototype.just_added_blankline = function() {
+Output.prototype.just_added_blankline = function $just_added_blankline() {
   return this.is_empty() ||
     (this.current_line.is_empty() && this.previous_line.is_empty());
 };
 
-Output.prototype.ensure_empty_line_above = function(starts_with, ends_with) {
+Output.prototype.ensure_empty_line_above = function $ensure_empty_line_above(starts_with, ends_with) {
   var index = this.__lines.length - 2;
   while (index >= 0) {
     var potentialEmptyLine = this.__lines[index];
@@ -583,7 +583,7 @@ function Options(options, merge_child_field) {
   this.templating = this._get_selection_list('templating', ['auto', 'none', 'angular', 'django', 'erb', 'handlebars', 'php', 'smarty'], ['auto']);
 }
 
-Options.prototype._get_array = function(name, default_value) {
+Options.prototype._get_array = function $_get_array(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || [];
   if (typeof option_value === 'object') {
@@ -596,13 +596,13 @@ Options.prototype._get_array = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_boolean = function(name, default_value) {
+Options.prototype._get_boolean = function $_get_boolean(name, default_value) {
   var option_value = this.raw_options[name];
   var result = option_value === undefined ? !!default_value : !!option_value;
   return result;
 };
 
-Options.prototype._get_characters = function(name, default_value) {
+Options.prototype._get_characters = function $_get_characters(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || '';
   if (typeof option_value === 'string') {
@@ -611,7 +611,7 @@ Options.prototype._get_characters = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_number = function(name, default_value) {
+Options.prototype._get_number = function $_get_number(name, default_value) {
   var option_value = this.raw_options[name];
   default_value = parseInt(default_value, 10);
   if (isNaN(default_value)) {
@@ -624,7 +624,7 @@ Options.prototype._get_number = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_selection = function(name, selection_list, default_value) {
+Options.prototype._get_selection = function $_get_selection(name, selection_list, default_value) {
   var result = this._get_selection_list(name, selection_list, default_value);
   if (result.length !== 1) {
     throw new Error(
@@ -636,7 +636,7 @@ Options.prototype._get_selection = function(name, selection_list, default_value)
 };
 
 
-Options.prototype._get_selection_list = function(name, selection_list, default_value) {
+Options.prototype._get_selection_list = function $_get_selection_list(name, selection_list, default_value) {
   if (!selection_list || selection_list.length === 0) {
     throw new Error("Selection list cannot be empty.");
   }
@@ -656,7 +656,7 @@ Options.prototype._get_selection_list = function(name, selection_list, default_v
   return result;
 };
 
-Options.prototype._is_valid_selection = function(result, selection_list) {
+Options.prototype._is_valid_selection = function $_is_valid_selection(result, selection_list) {
   return result.length && selection_list.length &&
     !result.some(function(item) { return selection_list.indexOf(item) === -1; });
 };
@@ -746,21 +746,21 @@ function InputScanner(input_string) {
   this.__position = 0;
 }
 
-InputScanner.prototype.restart = function() {
+InputScanner.prototype.restart = function $restart() {
   this.__position = 0;
 };
 
-InputScanner.prototype.back = function() {
+InputScanner.prototype.back = function $back() {
   if (this.__position > 0) {
     this.__position -= 1;
   }
 };
 
-InputScanner.prototype.hasNext = function() {
+InputScanner.prototype.hasNext = function $hasNext() {
   return this.__position < this.__input_length;
 };
 
-InputScanner.prototype.next = function() {
+InputScanner.prototype.next = function $next() {
   var val = null;
   if (this.hasNext()) {
     val = this.__input.charAt(this.__position);
@@ -769,7 +769,7 @@ InputScanner.prototype.next = function() {
   return val;
 };
 
-InputScanner.prototype.peek = function(index) {
+InputScanner.prototype.peek = function $peek(index) {
   var val = null;
   index = index || 0;
   index += this.__position;
@@ -786,7 +786,7 @@ InputScanner.prototype.peek = function(index) {
 // must get the match and check the index of the match.
 // If sticky is supported and set, this method will use it.
 // Otherwise it will check that global is set, and fall back to the slower method.
-InputScanner.prototype.__match = function(pattern, index) {
+InputScanner.prototype.__match = function $__match(pattern, index) {
   pattern.lastIndex = index;
   var pattern_match = pattern.exec(this.__input);
 
@@ -799,7 +799,7 @@ InputScanner.prototype.__match = function(pattern, index) {
   return pattern_match;
 };
 
-InputScanner.prototype.test = function(pattern, index) {
+InputScanner.prototype.test = function $test(pattern, index) {
   index = index || 0;
   index += this.__position;
 
@@ -810,14 +810,14 @@ InputScanner.prototype.test = function(pattern, index) {
   }
 };
 
-InputScanner.prototype.testChar = function(pattern, index) {
+InputScanner.prototype.testChar = function $testChar(pattern, index) {
   // test one character regex match
   var val = this.peek(index);
   pattern.lastIndex = 0;
   return val !== null && pattern.test(val);
 };
 
-InputScanner.prototype.match = function(pattern) {
+InputScanner.prototype.match = function $match(pattern) {
   var pattern_match = this.__match(pattern, this.__position);
   if (pattern_match) {
     this.__position += pattern_match[0].length;
@@ -827,7 +827,7 @@ InputScanner.prototype.match = function(pattern) {
   return pattern_match;
 };
 
-InputScanner.prototype.read = function(starting_pattern, until_pattern, until_after) {
+InputScanner.prototype.read = function $read(starting_pattern, until_pattern, until_after) {
   var val = '';
   var match;
   if (starting_pattern) {
@@ -842,7 +842,7 @@ InputScanner.prototype.read = function(starting_pattern, until_pattern, until_af
   return val;
 };
 
-InputScanner.prototype.readUntil = function(pattern, until_after) {
+InputScanner.prototype.readUntil = function $readUntil(pattern, until_after) {
   var val = '';
   var match_index = this.__position;
   pattern.lastIndex = this.__position;
@@ -861,11 +861,11 @@ InputScanner.prototype.readUntil = function(pattern, until_after) {
   return val;
 };
 
-InputScanner.prototype.readUntilAfter = function(pattern) {
+InputScanner.prototype.readUntilAfter = function $readUntilAfter(pattern) {
   return this.readUntil(pattern, true);
 };
 
-InputScanner.prototype.get_regexp = function(pattern, match_from) {
+InputScanner.prototype.get_regexp = function $get_regexp(pattern, match_from) {
   var result = null;
   var flags = 'g';
   if (match_from && regexp_has_sticky) {
@@ -881,19 +881,19 @@ InputScanner.prototype.get_regexp = function(pattern, match_from) {
   return result;
 };
 
-InputScanner.prototype.get_literal_regexp = function(literal_string) {
+InputScanner.prototype.get_literal_regexp = function $get_literal_regexp(literal_string) {
   return RegExp(literal_string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 };
 
 /* css beautifier legacy helpers */
-InputScanner.prototype.peekUntilAfter = function(pattern) {
+InputScanner.prototype.peekUntilAfter = function $peekUntilAfter(pattern) {
   var start = this.__position;
   var val = this.readUntilAfter(pattern);
   this.__position = start;
   return val;
 };
 
-InputScanner.prototype.lookBack = function(testVal) {
+InputScanner.prototype.lookBack = function $lookBack(testVal) {
   var start = this.__position - 1;
   return start >= testVal.length && this.__input.substring(start - testVal.length, start)
     .toLowerCase() === testVal;
@@ -949,7 +949,7 @@ function Directives(start_block_pattern, end_block_pattern) {
   this.__directives_end_ignore_pattern = new RegExp(start_block_pattern + /\sbeautify\signore:end\s/.source + end_block_pattern, 'g');
 }
 
-Directives.prototype.get_directives = function(text) {
+Directives.prototype.get_directives = function $get_directives(text) {
   if (!text.match(this.__directives_block_pattern)) {
     return null;
   }
@@ -966,7 +966,7 @@ Directives.prototype.get_directives = function(text) {
   return directives;
 };
 
-Directives.prototype.readIgnored = function(input) {
+Directives.prototype.readIgnored = function $readIgnored(input) {
   return input.readUntilAfter(this.__directives_end_ignore_pattern);
 };
 
@@ -1018,7 +1018,7 @@ function css_beautify(source_text, options) {
 }
 
 module.exports = css_beautify;
-module.exports.defaultOptions = function() {
+module.exports.defaultOptions = function $defaultOptions() {
   return new Options();
 };
 
@@ -1103,7 +1103,7 @@ function Beautifier(source_text, options) {
 
 }
 
-Beautifier.prototype.eatString = function(endChars) {
+Beautifier.prototype.eatString = function $eatString(endChars) {
   var result = '';
   this._ch = this._input.next();
   while (this._ch) {
@@ -1122,7 +1122,7 @@ Beautifier.prototype.eatString = function(endChars) {
 // When allowAtLeastOneNewLine is true, will output new lines for each
 // newline character found; if the user has preserve_newlines off, only
 // the first newline will be output
-Beautifier.prototype.eatWhitespace = function(allowAtLeastOneNewLine) {
+Beautifier.prototype.eatWhitespace = function $eatWhitespace(allowAtLeastOneNewLine) {
   var result = whitespaceChar.test(this._input.peek());
   var newline_count = 0;
   while (whitespaceChar.test(this._input.peek())) {
@@ -1140,7 +1140,7 @@ Beautifier.prototype.eatWhitespace = function(allowAtLeastOneNewLine) {
 // Nested pseudo-class if we are insideRule
 // and the next special character found opens
 // a new block
-Beautifier.prototype.foundNestedPseudoClass = function() {
+Beautifier.prototype.foundNestedPseudoClass = function $foundNestedPseudoClass() {
   var openParen = 0;
   var i = 1;
   var ch = this._input.peek(i);
@@ -1164,23 +1164,23 @@ Beautifier.prototype.foundNestedPseudoClass = function() {
   return false;
 };
 
-Beautifier.prototype.print_string = function(output_string) {
+Beautifier.prototype.print_string = function $print_string(output_string) {
   this._output.set_indent(this._indentLevel);
   this._output.non_breaking_space = true;
   this._output.add_token(output_string);
 };
 
-Beautifier.prototype.preserveSingleSpace = function(isAfterSpace) {
+Beautifier.prototype.preserveSingleSpace = function $preserveSingleSpace(isAfterSpace) {
   if (isAfterSpace) {
     this._output.space_before_token = true;
   }
 };
 
-Beautifier.prototype.indent = function() {
+Beautifier.prototype.indent = function $indent() {
   this._indentLevel++;
 };
 
-Beautifier.prototype.outdent = function() {
+Beautifier.prototype.outdent = function $outdent() {
   if (this._indentLevel > 0) {
     this._indentLevel--;
   }
@@ -1188,7 +1188,7 @@ Beautifier.prototype.outdent = function() {
 
 /*_____________________--------------------_____________________*/
 
-Beautifier.prototype.beautify = function() {
+Beautifier.prototype.beautify = function $beautify() {
   if (this._options.disabled) {
     return this._source_text;
   }
@@ -1708,7 +1708,7 @@ if (true) {
   // simple use would be
   //
   //     walk.simple(myTree, {
-  //         Expression: function(node) { ... }
+  //         Expression : function $Expression(node) { ... }
   //     });
   //
   // to do something with all expressions. All ESTree node types
@@ -1887,7 +1887,7 @@ if (true) {
 
   var base = {};
 
-  base.Program = base.BlockStatement = base.StaticBlock = function (node, st, c) {
+  base.Program = base.BlockStatement = base.StaticBlock = function $StaticBlock(node, st, c) {
     for (var i = 0, list = node.body; i < list.length; i += 1)
       {
       var stmt = list[i];
@@ -1897,20 +1897,19 @@ if (true) {
   };
   base.Statement = skipThrough;
   base.EmptyStatement = ignore;
-  base.ExpressionStatement = base.ParenthesizedExpression = base.ChainExpression =
-    function (node, st, c) { return c(node.expression, st, "Expression"); };
-  base.IfStatement = function (node, st, c) {
+  base.ExpressionStatement = base.ParenthesizedExpression = base.ChainExpression = function $ChainExpression(node, st, c) { return c(node.expression, st, "Expression"); };
+  base.IfStatement = function $IfStatement(node, st, c) {
     c(node.test, st, "Expression");
     c(node.consequent, st, "Statement");
     if (node.alternate) { c(node.alternate, st, "Statement"); }
   };
-  base.LabeledStatement = function (node, st, c) { return c(node.body, st, "Statement"); };
+  base.LabeledStatement = function $LabeledStatement(node, st, c) { return c(node.body, st, "Statement"); };
   base.BreakStatement = base.ContinueStatement = ignore;
-  base.WithStatement = function (node, st, c) {
+  base.WithStatement = function $WithStatement(node, st, c) {
     c(node.object, st, "Expression");
     c(node.body, st, "Statement");
   };
-  base.SwitchStatement = function (node, st, c) {
+  base.SwitchStatement = function $SwitchStatement(node, st, c) {
     c(node.discriminant, st, "Expression");
     for (var i = 0, list = node.cases; i < list.length; i += 1) {
       var cs = list[i];
@@ -1918,7 +1917,7 @@ if (true) {
       c(cs, st);
     }
   };
-  base.SwitchCase = function (node, st, c) {
+  base.SwitchCase = function $SwitchCase(node, st, c) {
     if (node.test) { c(node.test, st, "Expression"); }
     for (var i = 0, list = node.consequent; i < list.length; i += 1)
       {
@@ -1927,43 +1926,42 @@ if (true) {
       c(cons, st, "Statement");
     }
   };
-  base.ReturnStatement = base.YieldExpression = base.AwaitExpression = function (node, st, c) {
+  base.ReturnStatement = base.YieldExpression = base.AwaitExpression = function $AwaitExpression(node, st, c) {
     if (node.argument) { c(node.argument, st, "Expression"); }
   };
-  base.ThrowStatement = base.SpreadElement =
-    function (node, st, c) { return c(node.argument, st, "Expression"); };
-  base.TryStatement = function (node, st, c) {
+  base.ThrowStatement = base.SpreadElement = function $SpreadElement(node, st, c) { return c(node.argument, st, "Expression"); };
+  base.TryStatement = function $TryStatement(node, st, c) {
     c(node.block, st, "Statement");
     if (node.handler) { c(node.handler, st); }
     if (node.finalizer) { c(node.finalizer, st, "Statement"); }
   };
-  base.CatchClause = function (node, st, c) {
+  base.CatchClause = function $CatchClause(node, st, c) {
     if (node.param) { c(node.param, st, "Pattern"); }
     c(node.body, st, "Statement");
   };
-  base.WhileStatement = base.DoWhileStatement = function (node, st, c) {
+  base.WhileStatement = base.DoWhileStatement = function $DoWhileStatement(node, st, c) {
     c(node.test, st, "Expression");
     c(node.body, st, "Statement");
   };
-  base.ForStatement = function (node, st, c) {
+  base.ForStatement = function $ForStatement(node, st, c) {
     if (node.init) { c(node.init, st, "ForInit"); }
     if (node.test) { c(node.test, st, "Expression"); }
     if (node.update) { c(node.update, st, "Expression"); }
     c(node.body, st, "Statement");
   };
-  base.ForInStatement = base.ForOfStatement = function (node, st, c) {
+  base.ForInStatement = base.ForOfStatement = function $ForOfStatement(node, st, c) {
     c(node.left, st, "ForInit");
     c(node.right, st, "Expression");
     c(node.body, st, "Statement");
   };
-  base.ForInit = function (node, st, c) {
+  base.ForInit = function $ForInit(node, st, c) {
     if (node.type === "VariableDeclaration") { c(node, st); }
     else { c(node, st, "Expression"); }
   };
   base.DebuggerStatement = ignore;
 
-  base.FunctionDeclaration = function (node, st, c) { return c(node, st, "Function"); };
-  base.VariableDeclaration = function (node, st, c) {
+  base.FunctionDeclaration = function $FunctionDeclaration(node, st, c) { return c(node, st, "Function"); };
+  base.VariableDeclaration = function $VariableDeclaration(node, st, c) {
     for (var i = 0, list = node.declarations; i < list.length; i += 1)
       {
       var decl = list[i];
@@ -1971,12 +1969,12 @@ if (true) {
       c(decl, st);
     }
   };
-  base.VariableDeclarator = function (node, st, c) {
+  base.VariableDeclarator = function $VariableDeclarator(node, st, c) {
     c(node.id, st, "Pattern");
     if (node.init) { c(node.init, st, "Expression"); }
   };
 
-  base.Function = function (node, st, c) {
+  base.Function = function $Function(node, st, c) {
     if (node.id) { c(node.id, st, "Pattern"); }
     for (var i = 0, list = node.params; i < list.length; i += 1)
       {
@@ -1987,7 +1985,7 @@ if (true) {
     c(node.body, st, node.expression ? "Expression" : "Statement");
   };
 
-  base.Pattern = function (node, st, c) {
+  base.Pattern = function $Pattern(node, st, c) {
     if (node.type === "Identifier")
       { c(node, st, "VariablePattern"); }
     else if (node.type === "MemberExpression")
@@ -1997,15 +1995,15 @@ if (true) {
   };
   base.VariablePattern = ignore;
   base.MemberPattern = skipThrough;
-  base.RestElement = function (node, st, c) { return c(node.argument, st, "Pattern"); };
-  base.ArrayPattern = function (node, st, c) {
+  base.RestElement = function $RestElement(node, st, c) { return c(node.argument, st, "Pattern"); };
+  base.ArrayPattern = function $ArrayPattern(node, st, c) {
     for (var i = 0, list = node.elements; i < list.length; i += 1) {
       var elt = list[i];
 
       if (elt) { c(elt, st, "Pattern"); }
     }
   };
-  base.ObjectPattern = function (node, st, c) {
+  base.ObjectPattern = function $ObjectPattern(node, st, c) {
     for (var i = 0, list = node.properties; i < list.length; i += 1) {
       var prop = list[i];
 
@@ -2020,14 +2018,14 @@ if (true) {
 
   base.Expression = skipThrough;
   base.ThisExpression = base.Super = base.MetaProperty = ignore;
-  base.ArrayExpression = function (node, st, c) {
+  base.ArrayExpression = function $ArrayExpression(node, st, c) {
     for (var i = 0, list = node.elements; i < list.length; i += 1) {
       var elt = list[i];
 
       if (elt) { c(elt, st, "Expression"); }
     }
   };
-  base.ObjectExpression = function (node, st, c) {
+  base.ObjectExpression = function $ObjectExpression(node, st, c) {
     for (var i = 0, list = node.properties; i < list.length; i += 1)
       {
       var prop = list[i];
@@ -2036,7 +2034,7 @@ if (true) {
     }
   };
   base.FunctionExpression = base.ArrowFunctionExpression = base.FunctionDeclaration;
-  base.SequenceExpression = function (node, st, c) {
+  base.SequenceExpression = function $SequenceExpression(node, st, c) {
     for (var i = 0, list = node.expressions; i < list.length; i += 1)
       {
       var expr = list[i];
@@ -2044,7 +2042,7 @@ if (true) {
       c(expr, st, "Expression");
     }
   };
-  base.TemplateLiteral = function (node, st, c) {
+  base.TemplateLiteral = function $TemplateLiteral(node, st, c) {
     for (var i = 0, list = node.quasis; i < list.length; i += 1)
       {
       var quasi = list[i];
@@ -2060,23 +2058,23 @@ if (true) {
     }
   };
   base.TemplateElement = ignore;
-  base.UnaryExpression = base.UpdateExpression = function (node, st, c) {
+  base.UnaryExpression = base.UpdateExpression = function $UpdateExpression(node, st, c) {
     c(node.argument, st, "Expression");
   };
-  base.BinaryExpression = base.LogicalExpression = function (node, st, c) {
+  base.BinaryExpression = base.LogicalExpression = function $LogicalExpression(node, st, c) {
     c(node.left, st, "Expression");
     c(node.right, st, "Expression");
   };
-  base.AssignmentExpression = base.AssignmentPattern = function (node, st, c) {
+  base.AssignmentExpression = base.AssignmentPattern = function $AssignmentPattern(node, st, c) {
     c(node.left, st, "Pattern");
     c(node.right, st, "Expression");
   };
-  base.ConditionalExpression = function (node, st, c) {
+  base.ConditionalExpression = function $ConditionalExpression(node, st, c) {
     c(node.test, st, "Expression");
     c(node.consequent, st, "Expression");
     c(node.alternate, st, "Expression");
   };
-  base.NewExpression = base.CallExpression = function (node, st, c) {
+  base.NewExpression = base.CallExpression = function $CallExpression(node, st, c) {
     c(node.callee, st, "Expression");
     if (node.arguments)
       { for (var i = 0, list = node.arguments; i < list.length; i += 1)
@@ -2086,21 +2084,21 @@ if (true) {
           c(arg, st, "Expression");
         } }
   };
-  base.MemberExpression = function (node, st, c) {
+  base.MemberExpression = function $MemberExpression(node, st, c) {
     c(node.object, st, "Expression");
     if (node.computed) { c(node.property, st, "Expression"); }
   };
-  base.ExportNamedDeclaration = base.ExportDefaultDeclaration = function (node, st, c) {
+  base.ExportNamedDeclaration = base.ExportDefaultDeclaration = function $ExportDefaultDeclaration(node, st, c) {
     if (node.declaration)
       { c(node.declaration, st, node.type === "ExportNamedDeclaration" || node.declaration.id ? "Statement" : "Expression"); }
     if (node.source) { c(node.source, st, "Expression"); }
   };
-  base.ExportAllDeclaration = function (node, st, c) {
+  base.ExportAllDeclaration = function $ExportAllDeclaration(node, st, c) {
     if (node.exported)
       { c(node.exported, st); }
     c(node.source, st, "Expression");
   };
-  base.ImportDeclaration = function (node, st, c) {
+  base.ImportDeclaration = function $ImportDeclaration(node, st, c) {
     for (var i = 0, list = node.specifiers; i < list.length; i += 1)
       {
       var spec = list[i];
@@ -2109,22 +2107,22 @@ if (true) {
     }
     c(node.source, st, "Expression");
   };
-  base.ImportExpression = function (node, st, c) {
+  base.ImportExpression = function $ImportExpression(node, st, c) {
     c(node.source, st, "Expression");
   };
   base.ImportSpecifier = base.ImportDefaultSpecifier = base.ImportNamespaceSpecifier = base.Identifier = base.PrivateIdentifier = base.Literal = ignore;
 
-  base.TaggedTemplateExpression = function (node, st, c) {
+  base.TaggedTemplateExpression = function $TaggedTemplateExpression(node, st, c) {
     c(node.tag, st, "Expression");
     c(node.quasi, st, "Expression");
   };
-  base.ClassDeclaration = base.ClassExpression = function (node, st, c) { return c(node, st, "Class"); };
-  base.Class = function (node, st, c) {
+  base.ClassDeclaration = base.ClassExpression = function $ClassExpression(node, st, c) { return c(node, st, "Class"); };
+  base.Class = function $Class(node, st, c) {
     if (node.id) { c(node.id, st, "Pattern"); }
     if (node.superClass) { c(node.superClass, st, "Expression"); }
     c(node.body, st);
   };
-  base.ClassBody = function (node, st, c) {
+  base.ClassBody = function $ClassBody(node, st, c) {
     for (var i = 0, list = node.body; i < list.length; i += 1)
       {
       var elt = list[i];
@@ -2132,7 +2130,7 @@ if (true) {
       c(elt, st);
     }
   };
-  base.MethodDefinition = base.PropertyDefinition = base.Property = function (node, st, c) {
+  base.MethodDefinition = base.PropertyDefinition = base.Property = function $Property(node, st, c) {
     if (node.computed) { c(node.key, st, "Expression"); }
     if (node.value) { c(node.value, st, "Expression"); }
   };
@@ -2207,7 +2205,7 @@ All methods returned accept two arguments, the source string and an options obje
 
 function get_beautify(js_beautify, css_beautify, html_beautify) {
   // the default is js
-  var beautify = function(src, config) {
+  var beautify = function $beautify(src, config) {
     return js_beautify.js_beautify(src, config);
   };
 
@@ -3371,7 +3369,7 @@ var EMPTY_OBJECT = {};
 var baseGenerator = GENERATOR;
 exports.baseGenerator = baseGenerator;
 
-var State = function () {
+var State = function $State() {
   function State(options) {
     _classCallCheck(this, State);
 
@@ -3639,7 +3637,7 @@ function js_beautify(js_source_text, options) {
 }
 
 module.exports = js_beautify;
-module.exports.defaultOptions = function() {
+module.exports.defaultOptions = function $defaultOptions() {
   return new Options();
 };
 
@@ -3814,7 +3812,7 @@ function Beautifier(source_text, options) {
   this._options = new Options(options);
 }
 
-Beautifier.prototype.create_flags = function(flags_base, mode) {
+Beautifier.prototype.create_flags = function $create_flags(flags_base, mode) {
   var next_indent_level = 0;
   if (flags_base) {
     next_indent_level = flags_base.indentation_level;
@@ -3852,7 +3850,7 @@ Beautifier.prototype.create_flags = function(flags_base, mode) {
   return next_flags;
 };
 
-Beautifier.prototype._reset = function(source_text) {
+Beautifier.prototype._reset = function $_reset(source_text) {
   var baseIndentString = source_text.match(/^[\t ]*/)[0];
 
   this._last_last_text = ''; // pre-last token text
@@ -3879,7 +3877,7 @@ Beautifier.prototype._reset = function(source_text) {
   return source_text;
 };
 
-Beautifier.prototype.beautify = function() {
+Beautifier.prototype.beautify = function $beautify() {
   // if disabled, return the input unchanged.
   if (this._options.disabled) {
     return this._source_text;
@@ -3911,7 +3909,7 @@ Beautifier.prototype.beautify = function() {
   return sweet_code;
 };
 
-Beautifier.prototype.handle_token = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.handle_token = function $handle_token(current_token, preserve_statement_flags) {
   if (current_token.type === TOKEN.START_EXPR) {
     this.handle_start_expr(current_token);
   } else if (current_token.type === TOKEN.END_EXPR) {
@@ -3949,7 +3947,7 @@ Beautifier.prototype.handle_token = function(current_token, preserve_statement_f
   }
 };
 
-Beautifier.prototype.handle_whitespace_and_comments = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.handle_whitespace_and_comments = function $handle_whitespace_and_comments(current_token, preserve_statement_flags) {
   var newlines = current_token.newlines;
   var keep_whitespace = this._options.keep_array_indentation && is_array(this._flags.mode);
 
@@ -3988,7 +3986,7 @@ Beautifier.prototype.handle_whitespace_and_comments = function(current_token, pr
 
 var newline_restricted_tokens = ['async', 'break', 'continue', 'return', 'throw', 'yield'];
 
-Beautifier.prototype.allow_wrap_or_preserved_newline = function(current_token, force_linewrap) {
+Beautifier.prototype.allow_wrap_or_preserved_newline = function $allow_wrap_or_preserved_newline(current_token, force_linewrap) {
   force_linewrap = (force_linewrap === undefined) ? false : force_linewrap;
 
   // Never wrap the first token on a line
@@ -4021,7 +4019,7 @@ Beautifier.prototype.allow_wrap_or_preserved_newline = function(current_token, f
   }
 };
 
-Beautifier.prototype.print_newline = function(force_newline, preserve_statement_flags) {
+Beautifier.prototype.print_newline = function $print_newline(force_newline, preserve_statement_flags) {
   if (!preserve_statement_flags) {
     if (this._flags.last_token.text !== ';' && this._flags.last_token.text !== ',' && this._flags.last_token.text !== '=' && (this._flags.last_token.type !== TOKEN.OPERATOR || this._flags.last_token.text === '--' || this._flags.last_token.text === '++')) {
       var next_token = this._tokens.peek();
@@ -4038,7 +4036,7 @@ Beautifier.prototype.print_newline = function(force_newline, preserve_statement_
   }
 };
 
-Beautifier.prototype.print_token_line_indentation = function(current_token) {
+Beautifier.prototype.print_token_line_indentation = function $print_token_line_indentation(current_token) {
   if (this._output.just_added_newline()) {
     if (this._options.keep_array_indentation &&
       current_token.newlines &&
@@ -4052,7 +4050,7 @@ Beautifier.prototype.print_token_line_indentation = function(current_token) {
   }
 };
 
-Beautifier.prototype.print_token = function(current_token) {
+Beautifier.prototype.print_token = function $print_token(current_token) {
   if (this._output.raw) {
     this._output.add_raw_token(current_token);
     return;
@@ -4086,12 +4084,12 @@ Beautifier.prototype.print_token = function(current_token) {
   }
 };
 
-Beautifier.prototype.indent = function() {
+Beautifier.prototype.indent = function $indent() {
   this._flags.indentation_level += 1;
   this._output.set_indent(this._flags.indentation_level, this._flags.alignment);
 };
 
-Beautifier.prototype.deindent = function() {
+Beautifier.prototype.deindent = function $deindent() {
   if (this._flags.indentation_level > 0 &&
     ((!this._flags.parent) || this._flags.indentation_level > this._flags.parent.indentation_level)) {
     this._flags.indentation_level -= 1;
@@ -4099,7 +4097,7 @@ Beautifier.prototype.deindent = function() {
   }
 };
 
-Beautifier.prototype.set_mode = function(mode) {
+Beautifier.prototype.set_mode = function $set_mode(mode) {
   if (this._flags) {
     this._flag_store.push(this._flags);
     this._previous_flags = this._flags;
@@ -4112,7 +4110,7 @@ Beautifier.prototype.set_mode = function(mode) {
 };
 
 
-Beautifier.prototype.restore_mode = function() {
+Beautifier.prototype.restore_mode = function $restore_mode() {
   if (this._flag_store.length > 0) {
     this._previous_flags = this._flags;
     this._flags = this._flag_store.pop();
@@ -4123,12 +4121,12 @@ Beautifier.prototype.restore_mode = function() {
   }
 };
 
-Beautifier.prototype.start_of_object_property = function() {
+Beautifier.prototype.start_of_object_property = function $start_of_object_property() {
   return this._flags.parent.mode === MODE.ObjectLiteral && this._flags.mode === MODE.Statement && (
     (this._flags.last_token.text === ':' && this._flags.ternary_depth === 0) || (reserved_array(this._flags.last_token, ['get', 'set'])));
 };
 
-Beautifier.prototype.start_of_statement = function(current_token) {
+Beautifier.prototype.start_of_statement = function $start_of_statement(current_token) {
   var start = false;
   start = start || reserved_array(this._flags.last_token, ['var', 'let', 'const']) && current_token.type === TOKEN.WORD;
   start = start || reserved_word(this._flags.last_token, 'do');
@@ -4162,7 +4160,7 @@ Beautifier.prototype.start_of_statement = function(current_token) {
   return false;
 };
 
-Beautifier.prototype.handle_start_expr = function(current_token) {
+Beautifier.prototype.handle_start_expr = function $handle_start_expr(current_token) {
   // The conditional starts the statement if appropriate.
   if (!this.start_of_statement(current_token)) {
     this.handle_whitespace_and_comments(current_token);
@@ -4231,7 +4229,7 @@ Beautifier.prototype.handle_start_expr = function(current_token) {
       // function* name() vs function* name ()
       // async name() vs async name ()
       // In ES6, you can also define the method properties of an object
-      // var obj = {a: function() {}}
+      // var obj = {a : function $a() {}}
       // It can be abbreviated
       // var obj = {a() {}}
       // var obj = { a() {}} vs var obj = { a () {}}
@@ -4289,7 +4287,7 @@ Beautifier.prototype.handle_start_expr = function(current_token) {
   this.indent();
 };
 
-Beautifier.prototype.handle_end_expr = function(current_token) {
+Beautifier.prototype.handle_end_expr = function $handle_end_expr(current_token) {
   // statements inside expressions are not valid syntax, but...
   // statements must all be closed when their container closes
   while (this._flags.mode === MODE.Statement) {
@@ -4327,7 +4325,7 @@ Beautifier.prototype.handle_end_expr = function(current_token) {
   }
 };
 
-Beautifier.prototype.handle_start_block = function(current_token) {
+Beautifier.prototype.handle_start_block = function $handle_start_block(current_token) {
   this.handle_whitespace_and_comments(current_token);
 
   // Check if this is should be treated as a ObjectLiteral
@@ -4431,7 +4429,7 @@ Beautifier.prototype.handle_start_block = function(current_token) {
   }
 };
 
-Beautifier.prototype.handle_end_block = function(current_token) {
+Beautifier.prototype.handle_end_block = function $handle_end_block(current_token) {
   // statements must all be closed when their container closes
   this.handle_whitespace_and_comments(current_token);
 
@@ -4465,7 +4463,7 @@ Beautifier.prototype.handle_end_block = function(current_token) {
   this.print_token(current_token);
 };
 
-Beautifier.prototype.handle_word = function(current_token) {
+Beautifier.prototype.handle_word = function $handle_word(current_token) {
   if (current_token.type === TOKEN.RESERVED) {
     if (in_array(current_token.text, ['set', 'get']) && this._flags.mode !== MODE.ObjectLiteral) {
       current_token.type = TOKEN.WORD;
@@ -4695,7 +4693,7 @@ Beautifier.prototype.handle_word = function(current_token) {
   }
 };
 
-Beautifier.prototype.handle_semicolon = function(current_token) {
+Beautifier.prototype.handle_semicolon = function $handle_semicolon(current_token) {
   if (this.start_of_statement(current_token)) {
     // The conditional starts the statement if appropriate.
     // Semicolon can be the start (and end) of a statement
@@ -4718,7 +4716,7 @@ Beautifier.prototype.handle_semicolon = function(current_token) {
   this.print_token(current_token);
 };
 
-Beautifier.prototype.handle_string = function(current_token) {
+Beautifier.prototype.handle_string = function $handle_string(current_token) {
   if (current_token.text.startsWith("`") && current_token.newlines === 0 && current_token.whitespace_before === '' && (current_token.previous.text === ')' || this._flags.last_token.type === TOKEN.WORD)) {
     //Conditional for detectign backtick strings
   } else if (this.start_of_statement(current_token)) {
@@ -4742,7 +4740,7 @@ Beautifier.prototype.handle_string = function(current_token) {
   this.print_token(current_token);
 };
 
-Beautifier.prototype.handle_equals = function(current_token) {
+Beautifier.prototype.handle_equals = function $handle_equals(current_token) {
   if (this.start_of_statement(current_token)) {
     // The conditional starts the statement if appropriate.
   } else {
@@ -4758,7 +4756,7 @@ Beautifier.prototype.handle_equals = function(current_token) {
   this._output.space_before_token = true;
 };
 
-Beautifier.prototype.handle_comma = function(current_token) {
+Beautifier.prototype.handle_comma = function $handle_comma(current_token) {
   this.handle_whitespace_and_comments(current_token, true);
 
   this.print_token(current_token);
@@ -4794,7 +4792,7 @@ Beautifier.prototype.handle_comma = function(current_token) {
   }
 };
 
-Beautifier.prototype.handle_operator = function(current_token) {
+Beautifier.prototype.handle_operator = function $handle_operator(current_token) {
   var isGeneratorAsterisk = current_token.text === '*' &&
     (reserved_array(this._flags.last_token, ['function', 'yield']) ||
       (in_array(this._flags.last_token.type, [TOKEN.START_BLOCK, TOKEN.COMMA, TOKEN.END_BLOCK, TOKEN.SEMICOLON]))
@@ -4989,7 +4987,7 @@ Beautifier.prototype.handle_operator = function(current_token) {
   this._output.space_before_token = space_after;
 };
 
-Beautifier.prototype.handle_block_comment = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.handle_block_comment = function $handle_block_comment(current_token, preserve_statement_flags) {
   if (this._output.raw) {
     this._output.add_raw_token(current_token);
     if (current_token.directives && current_token.directives.preserve === 'end') {
@@ -5020,7 +5018,7 @@ Beautifier.prototype.handle_block_comment = function(current_token, preserve_sta
   }
 };
 
-Beautifier.prototype.print_block_commment = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.print_block_commment = function $print_block_commment(current_token, preserve_statement_flags) {
   var lines = split_linebreaks(current_token.text);
   var j; // iterator for this case
   var javadoc = false;
@@ -5070,7 +5068,7 @@ Beautifier.prototype.print_block_commment = function(current_token, preserve_sta
 };
 
 
-Beautifier.prototype.handle_comment = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.handle_comment = function $handle_comment(current_token, preserve_statement_flags) {
   if (current_token.newlines) {
     this.print_newline(false, preserve_statement_flags);
   } else {
@@ -5082,7 +5080,7 @@ Beautifier.prototype.handle_comment = function(current_token, preserve_statement
   this.print_newline(false, preserve_statement_flags);
 };
 
-Beautifier.prototype.handle_dot = function(current_token) {
+Beautifier.prototype.handle_dot = function $handle_dot(current_token) {
   if (this.start_of_statement(current_token)) {
     // The conditional starts the statement if appropriate.
   } else {
@@ -5111,7 +5109,7 @@ Beautifier.prototype.handle_dot = function(current_token) {
   this.print_token(current_token);
 };
 
-Beautifier.prototype.handle_unknown = function(current_token, preserve_statement_flags) {
+Beautifier.prototype.handle_unknown = function $handle_unknown(current_token, preserve_statement_flags) {
   this.print_token(current_token);
 
   if (current_token.text[current_token.text.length - 1] === '\n') {
@@ -5119,7 +5117,7 @@ Beautifier.prototype.handle_unknown = function(current_token, preserve_statement
   }
 };
 
-Beautifier.prototype.handle_eof = function(current_token) {
+Beautifier.prototype.handle_eof = function $handle_eof(current_token) {
   // Unwind any open statements
   while (this._flags.mode === MODE.Statement) {
     this.restore_mode();
@@ -5177,13 +5175,13 @@ function OutputLine(parent) {
   this.__items = [];
 }
 
-OutputLine.prototype.clone_empty = function() {
+OutputLine.prototype.clone_empty = function $clone_empty() {
   var line = new OutputLine(this.__parent);
   line.set_indent(this.__indent_count, this.__alignment_count);
   return line;
 };
 
-OutputLine.prototype.item = function(index) {
+OutputLine.prototype.item = function $item(index) {
   if (index < 0) {
     return this.__items[this.__items.length + index];
   } else {
@@ -5191,7 +5189,7 @@ OutputLine.prototype.item = function(index) {
   }
 };
 
-OutputLine.prototype.has_match = function(pattern) {
+OutputLine.prototype.has_match = function $has_match(pattern) {
   for (var lastCheckedOutput = this.__items.length - 1; lastCheckedOutput >= 0; lastCheckedOutput--) {
     if (this.__items[lastCheckedOutput].match(pattern)) {
       return true;
@@ -5200,7 +5198,7 @@ OutputLine.prototype.has_match = function(pattern) {
   return false;
 };
 
-OutputLine.prototype.set_indent = function(indent, alignment) {
+OutputLine.prototype.set_indent = function $set_indent(indent, alignment) {
   if (this.is_empty()) {
     this.__indent_count = indent || 0;
     this.__alignment_count = alignment || 0;
@@ -5208,7 +5206,7 @@ OutputLine.prototype.set_indent = function(indent, alignment) {
   }
 };
 
-OutputLine.prototype._set_wrap_point = function() {
+OutputLine.prototype._set_wrap_point = function $_set_wrap_point() {
   if (this.__parent.wrap_line_length) {
     this.__wrap_point_index = this.__items.length;
     this.__wrap_point_character_count = this.__character_count;
@@ -5217,13 +5215,13 @@ OutputLine.prototype._set_wrap_point = function() {
   }
 };
 
-OutputLine.prototype._should_wrap = function() {
+OutputLine.prototype._should_wrap = function $_should_wrap() {
   return this.__wrap_point_index &&
     this.__character_count > this.__parent.wrap_line_length &&
     this.__wrap_point_character_count > this.__parent.next_line.__character_count;
 };
 
-OutputLine.prototype._allow_wrap = function() {
+OutputLine.prototype._allow_wrap = function $_allow_wrap() {
   if (this._should_wrap()) {
     this.__parent.add_new_line();
     var next = this.__parent.current_line;
@@ -5243,11 +5241,11 @@ OutputLine.prototype._allow_wrap = function() {
   return false;
 };
 
-OutputLine.prototype.is_empty = function() {
+OutputLine.prototype.is_empty = function $is_empty() {
   return this.__items.length === 0;
 };
 
-OutputLine.prototype.last = function() {
+OutputLine.prototype.last = function $last() {
   if (!this.is_empty()) {
     return this.__items[this.__items.length - 1];
   } else {
@@ -5255,7 +5253,7 @@ OutputLine.prototype.last = function() {
   }
 };
 
-OutputLine.prototype.push = function(item) {
+OutputLine.prototype.push = function $push(item) {
   this.__items.push(item);
   var last_newline_index = item.lastIndexOf('\n');
   if (last_newline_index !== -1) {
@@ -5265,7 +5263,7 @@ OutputLine.prototype.push = function(item) {
   }
 };
 
-OutputLine.prototype.pop = function() {
+OutputLine.prototype.pop = function $pop() {
   var item = null;
   if (!this.is_empty()) {
     item = this.__items.pop();
@@ -5275,26 +5273,26 @@ OutputLine.prototype.pop = function() {
 };
 
 
-OutputLine.prototype._remove_indent = function() {
+OutputLine.prototype._remove_indent = function $_remove_indent() {
   if (this.__indent_count > 0) {
     this.__indent_count -= 1;
     this.__character_count -= this.__parent.indent_size;
   }
 };
 
-OutputLine.prototype._remove_wrap_indent = function() {
+OutputLine.prototype._remove_wrap_indent = function $_remove_wrap_indent() {
   if (this.__wrap_point_indent_count > 0) {
     this.__wrap_point_indent_count -= 1;
   }
 };
-OutputLine.prototype.trim = function() {
+OutputLine.prototype.trim = function $trim() {
   while (this.last() === ' ') {
     this.__items.pop();
     this.__character_count -= 1;
   }
 };
 
-OutputLine.prototype.toString = function() {
+OutputLine.prototype.toString = function $toString() {
   var result = '';
   if (this.is_empty()) {
     if (this.__parent.indent_empty_lines) {
@@ -5325,7 +5323,7 @@ function IndentStringCache(options, baseIndentString) {
   this.__base_string_length = baseIndentString.length;
 }
 
-IndentStringCache.prototype.get_indent_size = function(indent, column) {
+IndentStringCache.prototype.get_indent_size = function $get_indent_size(indent, column) {
   var result = this.__base_string_length;
   column = column || 0;
   if (indent < 0) {
@@ -5336,7 +5334,7 @@ IndentStringCache.prototype.get_indent_size = function(indent, column) {
   return result;
 };
 
-IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
+IndentStringCache.prototype.get_indent_string = function $get_indent_string(indent_level, column) {
   var result = this.__base_string;
   column = column || 0;
   if (indent_level < 0) {
@@ -5349,13 +5347,13 @@ IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
   return result;
 };
 
-IndentStringCache.prototype.__ensure_cache = function(column) {
+IndentStringCache.prototype.__ensure_cache = function $__ensure_cache(column) {
   while (column >= this.__cache.length) {
     this.__add_column();
   }
 };
 
-IndentStringCache.prototype.__add_column = function() {
+IndentStringCache.prototype.__add_column = function $__add_column() {
   var column = this.__cache.length;
   var indent = 0;
   var result = '';
@@ -5389,29 +5387,29 @@ function Output(options, baseIndentString) {
   this.__add_outputline();
 }
 
-Output.prototype.__add_outputline = function() {
+Output.prototype.__add_outputline = function $__add_outputline() {
   this.previous_line = this.current_line;
   this.current_line = this.next_line.clone_empty();
   this.__lines.push(this.current_line);
 };
 
-Output.prototype.get_line_number = function() {
+Output.prototype.get_line_number = function $get_line_number() {
   return this.__lines.length;
 };
 
-Output.prototype.get_indent_string = function(indent, column) {
+Output.prototype.get_indent_string = function $get_indent_string(indent, column) {
   return this.__indent_cache.get_indent_string(indent, column);
 };
 
-Output.prototype.get_indent_size = function(indent, column) {
+Output.prototype.get_indent_size = function $get_indent_size(indent, column) {
   return this.__indent_cache.get_indent_size(indent, column);
 };
 
-Output.prototype.is_empty = function() {
+Output.prototype.is_empty = function $is_empty() {
   return !this.previous_line && this.current_line.is_empty();
 };
 
-Output.prototype.add_new_line = function(force_newline) {
+Output.prototype.add_new_line = function $add_new_line(force_newline) {
   // never newline at the start of file
   // otherwise, newline only if we didn't just add one or we're forced
   if (this.is_empty() ||
@@ -5427,7 +5425,7 @@ Output.prototype.add_new_line = function(force_newline) {
   return true;
 };
 
-Output.prototype.get_code = function(eol) {
+Output.prototype.get_code = function $get_code(eol) {
   this.trim(true);
 
   // handle some edge cases where the last tokens
@@ -5452,11 +5450,11 @@ Output.prototype.get_code = function(eol) {
   return sweet_code;
 };
 
-Output.prototype.set_wrap_point = function() {
+Output.prototype.set_wrap_point = function $set_wrap_point() {
   this.current_line._set_wrap_point();
 };
 
-Output.prototype.set_indent = function(indent, alignment) {
+Output.prototype.set_indent = function $set_indent(indent, alignment) {
   indent = indent || 0;
   alignment = alignment || 0;
 
@@ -5473,7 +5471,7 @@ Output.prototype.set_indent = function(indent, alignment) {
   return false;
 };
 
-Output.prototype.add_raw_token = function(token) {
+Output.prototype.add_raw_token = function $add_raw_token(token) {
   for (var x = 0; x < token.newlines; x++) {
     this.__add_outputline();
   }
@@ -5485,7 +5483,7 @@ Output.prototype.add_raw_token = function(token) {
   this.previous_token_wrapped = false;
 };
 
-Output.prototype.add_token = function(printable_token) {
+Output.prototype.add_token = function $add_token(printable_token) {
   this.__add_space_before_token();
   this.current_line.push(printable_token);
   this.space_before_token = false;
@@ -5493,7 +5491,7 @@ Output.prototype.add_token = function(printable_token) {
   this.previous_token_wrapped = this.current_line._allow_wrap();
 };
 
-Output.prototype.__add_space_before_token = function() {
+Output.prototype.__add_space_before_token = function $__add_space_before_token() {
   if (this.space_before_token && !this.just_added_newline()) {
     if (!this.non_breaking_space) {
       this.set_wrap_point();
@@ -5502,7 +5500,7 @@ Output.prototype.__add_space_before_token = function() {
   }
 };
 
-Output.prototype.remove_indent = function(index) {
+Output.prototype.remove_indent = function $remove_indent(index) {
   var output_length = this.__lines.length;
   while (index < output_length) {
     this.__lines[index]._remove_indent();
@@ -5511,7 +5509,7 @@ Output.prototype.remove_indent = function(index) {
   this.current_line._remove_wrap_indent();
 };
 
-Output.prototype.trim = function(eat_newlines) {
+Output.prototype.trim = function $trim(eat_newlines) {
   eat_newlines = (eat_newlines === undefined) ? false : eat_newlines;
 
   this.current_line.trim();
@@ -5527,16 +5525,16 @@ Output.prototype.trim = function(eat_newlines) {
     this.__lines[this.__lines.length - 2] : null;
 };
 
-Output.prototype.just_added_newline = function() {
+Output.prototype.just_added_newline = function $just_added_newline() {
   return this.current_line.is_empty();
 };
 
-Output.prototype.just_added_blankline = function() {
+Output.prototype.just_added_blankline = function $just_added_blankline() {
   return this.is_empty() ||
     (this.current_line.is_empty() && this.previous_line.is_empty());
 };
 
-Output.prototype.ensure_empty_line_above = function(starts_with, ends_with) {
+Output.prototype.ensure_empty_line_above = function $ensure_empty_line_above(starts_with, ends_with) {
   var index = this.__lines.length - 2;
   while (index >= 0) {
     var potentialEmptyLine = this.__lines[index];
@@ -5857,7 +5855,7 @@ function Options(options, merge_child_field) {
   this.templating = this._get_selection_list('templating', ['auto', 'none', 'angular', 'django', 'erb', 'handlebars', 'php', 'smarty'], ['auto']);
 }
 
-Options.prototype._get_array = function(name, default_value) {
+Options.prototype._get_array = function $_get_array(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || [];
   if (typeof option_value === 'object') {
@@ -5870,13 +5868,13 @@ Options.prototype._get_array = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_boolean = function(name, default_value) {
+Options.prototype._get_boolean = function $_get_boolean(name, default_value) {
   var option_value = this.raw_options[name];
   var result = option_value === undefined ? !!default_value : !!option_value;
   return result;
 };
 
-Options.prototype._get_characters = function(name, default_value) {
+Options.prototype._get_characters = function $_get_characters(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || '';
   if (typeof option_value === 'string') {
@@ -5885,7 +5883,7 @@ Options.prototype._get_characters = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_number = function(name, default_value) {
+Options.prototype._get_number = function $_get_number(name, default_value) {
   var option_value = this.raw_options[name];
   default_value = parseInt(default_value, 10);
   if (isNaN(default_value)) {
@@ -5898,7 +5896,7 @@ Options.prototype._get_number = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_selection = function(name, selection_list, default_value) {
+Options.prototype._get_selection = function $_get_selection(name, selection_list, default_value) {
   var result = this._get_selection_list(name, selection_list, default_value);
   if (result.length !== 1) {
     throw new Error(
@@ -5910,7 +5908,7 @@ Options.prototype._get_selection = function(name, selection_list, default_value)
 };
 
 
-Options.prototype._get_selection_list = function(name, selection_list, default_value) {
+Options.prototype._get_selection_list = function $_get_selection_list(name, selection_list, default_value) {
   if (!selection_list || selection_list.length === 0) {
     throw new Error("Selection list cannot be empty.");
   }
@@ -5930,7 +5928,7 @@ Options.prototype._get_selection_list = function(name, selection_list, default_v
   return result;
 };
 
-Options.prototype._is_valid_selection = function(result, selection_list) {
+Options.prototype._is_valid_selection = function $_is_valid_selection(result, selection_list) {
   return result.length && selection_list.length &&
     !result.some(function(item) { return selection_list.indexOf(item) === -1; });
 };
@@ -6085,7 +6083,7 @@ var reserved_word_pattern = new RegExp('^(?:' + reserved_words.join('|') + ')$')
 
 var in_html_comment;
 
-var Tokenizer = function(input_string, options) {
+var Tokenizer = function $Tokenizer(input_string, options) {
   BaseTokenizer.call(this, input_string, options);
 
   this._patterns.whitespace = this._patterns.whitespace.matching(
@@ -6119,15 +6117,15 @@ var Tokenizer = function(input_string, options) {
 };
 Tokenizer.prototype = new BaseTokenizer();
 
-Tokenizer.prototype._is_comment = function(current_token) {
+Tokenizer.prototype._is_comment = function $_is_comment(current_token) {
   return current_token.type === TOKEN.COMMENT || current_token.type === TOKEN.BLOCK_COMMENT || current_token.type === TOKEN.UNKNOWN;
 };
 
-Tokenizer.prototype._is_opening = function(current_token) {
+Tokenizer.prototype._is_opening = function $_is_opening(current_token) {
   return current_token.type === TOKEN.START_BLOCK || current_token.type === TOKEN.START_EXPR;
 };
 
-Tokenizer.prototype._is_closing = function(current_token, open_token) {
+Tokenizer.prototype._is_closing = function $_is_closing(current_token, open_token) {
   return (current_token.type === TOKEN.END_BLOCK || current_token.type === TOKEN.END_EXPR) &&
     (open_token && (
       (current_token.text === ']' && open_token.text === '[') ||
@@ -6135,11 +6133,11 @@ Tokenizer.prototype._is_closing = function(current_token, open_token) {
       (current_token.text === '}' && open_token.text === '{')));
 };
 
-Tokenizer.prototype._reset = function() {
+Tokenizer.prototype._reset = function $_reset() {
   in_html_comment = false;
 };
 
-Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // jshint unused:false
+Tokenizer.prototype._get_next_token = function $_get_next_token(previous_token, open_token) { // jshint unused:false
   var token = null;
   this._readWhitespace();
   var c = this._input.peek();
@@ -6162,7 +6160,7 @@ Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // 
   return token;
 };
 
-Tokenizer.prototype._read_word = function(previous_token) {
+Tokenizer.prototype._read_word = function $_read_word(previous_token) {
   var resulting_string;
   resulting_string = this.__patterns.identifier.read();
   if (resulting_string !== '') {
@@ -6185,7 +6183,7 @@ Tokenizer.prototype._read_word = function(previous_token) {
   }
 };
 
-Tokenizer.prototype._read_singles = function(c) {
+Tokenizer.prototype._read_singles = function $_read_singles(c) {
   var token = null;
   if (c === '(' || c === '[') {
     token = this._create_token(TOKEN.START_EXPR, c);
@@ -6209,7 +6207,7 @@ Tokenizer.prototype._read_singles = function(c) {
   return token;
 };
 
-Tokenizer.prototype._read_pair = function(c, d) {
+Tokenizer.prototype._read_pair = function $_read_pair(c, d) {
   var token = null;
   if (c === '#' && d === '{') {
     token = this._create_token(TOKEN.START_BLOCK, c + d);
@@ -6222,7 +6220,7 @@ Tokenizer.prototype._read_pair = function(c, d) {
   return token;
 };
 
-Tokenizer.prototype._read_punctuation = function() {
+Tokenizer.prototype._read_punctuation = function $_read_punctuation() {
   var resulting_string = this.__patterns.punct.read();
 
   if (resulting_string !== '') {
@@ -6236,7 +6234,7 @@ Tokenizer.prototype._read_punctuation = function() {
   }
 };
 
-Tokenizer.prototype._read_non_javascript = function(c) {
+Tokenizer.prototype._read_non_javascript = function $_read_non_javascript(c) {
   var resulting_string = '';
 
   if (c === '#') {
@@ -6300,7 +6298,7 @@ Tokenizer.prototype._read_non_javascript = function(c) {
   return null;
 };
 
-Tokenizer.prototype._read_comment = function(c) {
+Tokenizer.prototype._read_comment = function $_read_comment(c) {
   var token = null;
   if (c === '/') {
     var comment = '';
@@ -6323,7 +6321,7 @@ Tokenizer.prototype._read_comment = function(c) {
   return token;
 };
 
-Tokenizer.prototype._read_string = function(c) {
+Tokenizer.prototype._read_string = function $_read_string(c) {
   if (c === '`' || c === "'" || c === '"') {
     var resulting_string = this._input.next();
     this.has_char_escapes = false;
@@ -6350,7 +6348,7 @@ Tokenizer.prototype._read_string = function(c) {
   return null;
 };
 
-Tokenizer.prototype._allow_regexp_or_xml = function(previous_token) {
+Tokenizer.prototype._allow_regexp_or_xml = function $_allow_regexp_or_xml(previous_token) {
   // regex and xml can only appear in specific locations during parsing
   return (previous_token.type === TOKEN.RESERVED && in_array(previous_token.text, ['return', 'case', 'throw', 'else', 'do', 'typeof', 'yield'])) ||
     (previous_token.type === TOKEN.END_EXPR && previous_token.text === ')' &&
@@ -6360,7 +6358,7 @@ Tokenizer.prototype._allow_regexp_or_xml = function(previous_token) {
     ]));
 };
 
-Tokenizer.prototype._read_regexp = function(c, previous_token) {
+Tokenizer.prototype._read_regexp = function $_read_regexp(c, previous_token) {
 
   if (c === '/' && this._allow_regexp_or_xml(previous_token)) {
     // handle regexp
@@ -6398,7 +6396,7 @@ Tokenizer.prototype._read_regexp = function(c, previous_token) {
   return null;
 };
 
-Tokenizer.prototype._read_xml = function(c, previous_token) {
+Tokenizer.prototype._read_xml = function $_read_xml(c, previous_token) {
 
   if (this._options.e4x && c === "<" && this._allow_regexp_or_xml(previous_token)) {
     var xmlStr = '';
@@ -6510,7 +6508,7 @@ function unescape_string(s) {
 
 // handle string
 //
-Tokenizer.prototype._read_string_recursive = function(delimiter, allow_unescaped_newlines, start_sub) {
+Tokenizer.prototype._read_string_recursive = function $_read_string_recursive(delimiter, allow_unescaped_newlines, start_sub) {
   var current_char;
   var pattern;
   if (delimiter === '\'') {
@@ -6611,21 +6609,21 @@ function InputScanner(input_string) {
   this.__position = 0;
 }
 
-InputScanner.prototype.restart = function() {
+InputScanner.prototype.restart = function $restart() {
   this.__position = 0;
 };
 
-InputScanner.prototype.back = function() {
+InputScanner.prototype.back = function $back() {
   if (this.__position > 0) {
     this.__position -= 1;
   }
 };
 
-InputScanner.prototype.hasNext = function() {
+InputScanner.prototype.hasNext = function $hasNext() {
   return this.__position < this.__input_length;
 };
 
-InputScanner.prototype.next = function() {
+InputScanner.prototype.next = function $next() {
   var val = null;
   if (this.hasNext()) {
     val = this.__input.charAt(this.__position);
@@ -6634,7 +6632,7 @@ InputScanner.prototype.next = function() {
   return val;
 };
 
-InputScanner.prototype.peek = function(index) {
+InputScanner.prototype.peek = function $peek(index) {
   var val = null;
   index = index || 0;
   index += this.__position;
@@ -6651,7 +6649,7 @@ InputScanner.prototype.peek = function(index) {
 // must get the match and check the index of the match.
 // If sticky is supported and set, this method will use it.
 // Otherwise it will check that global is set, and fall back to the slower method.
-InputScanner.prototype.__match = function(pattern, index) {
+InputScanner.prototype.__match = function $__match(pattern, index) {
   pattern.lastIndex = index;
   var pattern_match = pattern.exec(this.__input);
 
@@ -6664,7 +6662,7 @@ InputScanner.prototype.__match = function(pattern, index) {
   return pattern_match;
 };
 
-InputScanner.prototype.test = function(pattern, index) {
+InputScanner.prototype.test = function $test(pattern, index) {
   index = index || 0;
   index += this.__position;
 
@@ -6675,14 +6673,14 @@ InputScanner.prototype.test = function(pattern, index) {
   }
 };
 
-InputScanner.prototype.testChar = function(pattern, index) {
+InputScanner.prototype.testChar = function $testChar(pattern, index) {
   // test one character regex match
   var val = this.peek(index);
   pattern.lastIndex = 0;
   return val !== null && pattern.test(val);
 };
 
-InputScanner.prototype.match = function(pattern) {
+InputScanner.prototype.match = function $match(pattern) {
   var pattern_match = this.__match(pattern, this.__position);
   if (pattern_match) {
     this.__position += pattern_match[0].length;
@@ -6692,7 +6690,7 @@ InputScanner.prototype.match = function(pattern) {
   return pattern_match;
 };
 
-InputScanner.prototype.read = function(starting_pattern, until_pattern, until_after) {
+InputScanner.prototype.read = function $read(starting_pattern, until_pattern, until_after) {
   var val = '';
   var match;
   if (starting_pattern) {
@@ -6707,7 +6705,7 @@ InputScanner.prototype.read = function(starting_pattern, until_pattern, until_af
   return val;
 };
 
-InputScanner.prototype.readUntil = function(pattern, until_after) {
+InputScanner.prototype.readUntil = function $readUntil(pattern, until_after) {
   var val = '';
   var match_index = this.__position;
   pattern.lastIndex = this.__position;
@@ -6726,11 +6724,11 @@ InputScanner.prototype.readUntil = function(pattern, until_after) {
   return val;
 };
 
-InputScanner.prototype.readUntilAfter = function(pattern) {
+InputScanner.prototype.readUntilAfter = function $readUntilAfter(pattern) {
   return this.readUntil(pattern, true);
 };
 
-InputScanner.prototype.get_regexp = function(pattern, match_from) {
+InputScanner.prototype.get_regexp = function $get_regexp(pattern, match_from) {
   var result = null;
   var flags = 'g';
   if (match_from && regexp_has_sticky) {
@@ -6746,19 +6744,19 @@ InputScanner.prototype.get_regexp = function(pattern, match_from) {
   return result;
 };
 
-InputScanner.prototype.get_literal_regexp = function(literal_string) {
+InputScanner.prototype.get_literal_regexp = function $get_literal_regexp(literal_string) {
   return RegExp(literal_string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 };
 
 /* css beautifier legacy helpers */
-InputScanner.prototype.peekUntilAfter = function(pattern) {
+InputScanner.prototype.peekUntilAfter = function $peekUntilAfter(pattern) {
   var start = this.__position;
   var val = this.readUntilAfter(pattern);
   this.__position = start;
   return val;
 };
 
-InputScanner.prototype.lookBack = function(testVal) {
+InputScanner.prototype.lookBack = function $lookBack(testVal) {
   var start = this.__position - 1;
   return start >= testVal.length && this.__input.substring(start - testVal.length, start)
     .toLowerCase() === testVal;
@@ -6812,7 +6810,7 @@ var TOKEN = {
   EOF: 'TK_EOF'
 };
 
-var Tokenizer = function(input_string, options) {
+var Tokenizer = function $Tokenizer(input_string, options) {
   this._input = new InputScanner(input_string);
   this._options = options || {};
   this.__tokens = null;
@@ -6821,7 +6819,7 @@ var Tokenizer = function(input_string, options) {
   this._patterns.whitespace = new WhitespacePattern(this._input);
 };
 
-Tokenizer.prototype.tokenize = function() {
+Tokenizer.prototype.tokenize = function $tokenize() {
   this._input.restart();
   this.__tokens = new TokenStream();
 
@@ -6868,13 +6866,13 @@ Tokenizer.prototype.tokenize = function() {
 };
 
 
-Tokenizer.prototype._is_first_token = function() {
+Tokenizer.prototype._is_first_token = function $_is_first_token() {
   return this.__tokens.isEmpty();
 };
 
-Tokenizer.prototype._reset = function() {};
+Tokenizer.prototype._reset = function $_reset() {};
 
-Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // jshint unused:false
+Tokenizer.prototype._get_next_token = function $_get_next_token(previous_token, open_token) { // jshint unused:false
   this._readWhitespace();
   var resulting_string = this._input.read(/.+/g);
   if (resulting_string) {
@@ -6884,26 +6882,26 @@ Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // 
   }
 };
 
-Tokenizer.prototype._is_comment = function(current_token) { // jshint unused:false
+Tokenizer.prototype._is_comment = function $_is_comment(current_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._is_opening = function(current_token) { // jshint unused:false
+Tokenizer.prototype._is_opening = function $_is_opening(current_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._is_closing = function(current_token, open_token) { // jshint unused:false
+Tokenizer.prototype._is_closing = function $_is_closing(current_token, open_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._create_token = function(type, text) {
+Tokenizer.prototype._create_token = function $_create_token(type, text) {
   var token = new Token(type, text,
     this._patterns.whitespace.newline_count,
     this._patterns.whitespace.whitespace_before_token);
   return token;
 };
 
-Tokenizer.prototype._readWhitespace = function() {
+Tokenizer.prototype._readWhitespace = function $_readWhitespace() {
   return this._patterns.whitespace.read();
 };
 
@@ -6955,19 +6953,19 @@ function TokenStream(parent_token) {
   this.__parent_token = parent_token;
 }
 
-TokenStream.prototype.restart = function() {
+TokenStream.prototype.restart = function $restart() {
   this.__position = 0;
 };
 
-TokenStream.prototype.isEmpty = function() {
+TokenStream.prototype.isEmpty = function $isEmpty() {
   return this.__tokens_length === 0;
 };
 
-TokenStream.prototype.hasNext = function() {
+TokenStream.prototype.hasNext = function $hasNext() {
   return this.__position < this.__tokens_length;
 };
 
-TokenStream.prototype.next = function() {
+TokenStream.prototype.next = function $next() {
   var val = null;
   if (this.hasNext()) {
     val = this.__tokens[this.__position];
@@ -6976,7 +6974,7 @@ TokenStream.prototype.next = function() {
   return val;
 };
 
-TokenStream.prototype.peek = function(index) {
+TokenStream.prototype.peek = function $peek(index) {
   var val = null;
   index = index || 0;
   index += this.__position;
@@ -6986,7 +6984,7 @@ TokenStream.prototype.peek = function(index) {
   return val;
 };
 
-TokenStream.prototype.add = function(token) {
+TokenStream.prototype.add = function $add(token) {
   if (this.__parent_token) {
     token.parent = this.__parent_token;
   }
@@ -7046,7 +7044,7 @@ function WhitespacePattern(input_scanner, parent) {
 }
 WhitespacePattern.prototype = new Pattern();
 
-WhitespacePattern.prototype.__set_whitespace_patterns = function(whitespace_chars, newline_chars) {
+WhitespacePattern.prototype.__set_whitespace_patterns = function $__set_whitespace_patterns(whitespace_chars, newline_chars) {
   whitespace_chars += '\\t ';
   newline_chars += '\\n\\r';
 
@@ -7056,7 +7054,7 @@ WhitespacePattern.prototype.__set_whitespace_patterns = function(whitespace_char
     '\\r\\n|[' + newline_chars + ']');
 };
 
-WhitespacePattern.prototype.read = function() {
+WhitespacePattern.prototype.read = function $read() {
   this.newline_count = 0;
   this.whitespace_before_token = '';
 
@@ -7072,18 +7070,18 @@ WhitespacePattern.prototype.read = function() {
   return resulting_string;
 };
 
-WhitespacePattern.prototype.matching = function(whitespace_chars, newline_chars) {
+WhitespacePattern.prototype.matching = function $matching(whitespace_chars, newline_chars) {
   var result = this._create();
   result.__set_whitespace_patterns(whitespace_chars, newline_chars);
   result._update();
   return result;
 };
 
-WhitespacePattern.prototype._create = function() {
+WhitespacePattern.prototype._create = function $_create() {
   return new WhitespacePattern(this._input, this);
 };
 
-WhitespacePattern.prototype.__split = function(regexp, input_string) {
+WhitespacePattern.prototype.__split = function $__split(regexp, input_string) {
   regexp.lastIndex = 0;
   var start_index = 0;
   var result = [];
@@ -7157,7 +7155,7 @@ function Pattern(input_scanner, parent) {
   }
 }
 
-Pattern.prototype.read = function() {
+Pattern.prototype.read = function $read() {
   var result = this._input.read(this._starting_pattern);
   if (!this._starting_pattern || result) {
     result += this._input.read(this._match_pattern, this._until_pattern, this._until_after);
@@ -7165,11 +7163,11 @@ Pattern.prototype.read = function() {
   return result;
 };
 
-Pattern.prototype.read_match = function() {
+Pattern.prototype.read_match = function $read_match() {
   return this._input.match(this._match_pattern);
 };
 
-Pattern.prototype.until_after = function(pattern) {
+Pattern.prototype.until_after = function $until_after(pattern) {
   var result = this._create();
   result._until_after = true;
   result._until_pattern = this._input.get_regexp(pattern);
@@ -7177,7 +7175,7 @@ Pattern.prototype.until_after = function(pattern) {
   return result;
 };
 
-Pattern.prototype.until = function(pattern) {
+Pattern.prototype.until = function $until(pattern) {
   var result = this._create();
   result._until_after = false;
   result._until_pattern = this._input.get_regexp(pattern);
@@ -7185,25 +7183,25 @@ Pattern.prototype.until = function(pattern) {
   return result;
 };
 
-Pattern.prototype.starting_with = function(pattern) {
+Pattern.prototype.starting_with = function $starting_with(pattern) {
   var result = this._create();
   result._starting_pattern = this._input.get_regexp(pattern, true);
   result._update();
   return result;
 };
 
-Pattern.prototype.matching = function(pattern) {
+Pattern.prototype.matching = function $matching(pattern) {
   var result = this._create();
   result._match_pattern = this._input.get_regexp(pattern, true);
   result._update();
   return result;
 };
 
-Pattern.prototype._create = function() {
+Pattern.prototype._create = function $_create() {
   return new Pattern(this._input, this);
 };
 
-Pattern.prototype._update = function() {};
+Pattern.prototype._update = function $_update() {};
 
 module.exports.Pattern = Pattern;
 
@@ -7251,7 +7249,7 @@ function Directives(start_block_pattern, end_block_pattern) {
   this.__directives_end_ignore_pattern = new RegExp(start_block_pattern + /\sbeautify\signore:end\s/.source + end_block_pattern, 'g');
 }
 
-Directives.prototype.get_directives = function(text) {
+Directives.prototype.get_directives = function $get_directives(text) {
   if (!text.match(this.__directives_block_pattern)) {
     return null;
   }
@@ -7268,7 +7266,7 @@ Directives.prototype.get_directives = function(text) {
   return directives;
 };
 
-Directives.prototype.readIgnored = function(input) {
+Directives.prototype.readIgnored = function $readIgnored(input) {
   return input.readUntilAfter(this.__directives_end_ignore_pattern);
 };
 
@@ -7353,22 +7351,22 @@ function TemplatablePattern(input_scanner, parent) {
 }
 TemplatablePattern.prototype = new Pattern();
 
-TemplatablePattern.prototype._create = function() {
+TemplatablePattern.prototype._create = function $_create() {
   return new TemplatablePattern(this._input, this);
 };
 
-TemplatablePattern.prototype._update = function() {
+TemplatablePattern.prototype._update = function $_update() {
   this.__set_templated_pattern();
 };
 
-TemplatablePattern.prototype.disable = function(language) {
+TemplatablePattern.prototype.disable = function $disable(language) {
   var result = this._create();
   result._disabled[language] = true;
   result._update();
   return result;
 };
 
-TemplatablePattern.prototype.read_options = function(options) {
+TemplatablePattern.prototype.read_options = function $read_options(options) {
   var result = this._create();
   for (var language in template_names) {
     result._disabled[language] = options.templating.indexOf(language) === -1;
@@ -7377,14 +7375,14 @@ TemplatablePattern.prototype.read_options = function(options) {
   return result;
 };
 
-TemplatablePattern.prototype.exclude = function(language) {
+TemplatablePattern.prototype.exclude = function $exclude(language) {
   var result = this._create();
   result._excluded[language] = true;
   result._update();
   return result;
 };
 
-TemplatablePattern.prototype.read = function() {
+TemplatablePattern.prototype.read = function $read() {
   var result = '';
   if (this._match_pattern) {
     result = this._input.read(this._starting_pattern);
@@ -7408,7 +7406,7 @@ TemplatablePattern.prototype.read = function() {
   return result;
 };
 
-TemplatablePattern.prototype.__set_templated_pattern = function() {
+TemplatablePattern.prototype.__set_templated_pattern = function $__set_templated_pattern() {
   var items = [];
 
   if (!this._disabled.php) {
@@ -7441,7 +7439,7 @@ TemplatablePattern.prototype.__set_templated_pattern = function() {
   this.__template_pattern = this._input.get_regexp('(?:' + items.join('|') + ')');
 };
 
-TemplatablePattern.prototype._read_template = function() {
+TemplatablePattern.prototype._read_template = function $_read_template() {
   var resulting_string = '';
   var c = this._input.peek();
   if (c === '<') {
@@ -8014,7 +8012,7 @@ if (true) {
 
     if (isArray(options.onToken)) {
       var tokens = options.onToken;
-      options.onToken = function (token) { return tokens.push(token); };
+      options.onToken = function $onToken(token) { return tokens.push(token); };
     }
     if (isArray(options.onComment))
       { options.onComment = pushComment(options, options.onComment); }
@@ -8158,13 +8156,13 @@ if (true) {
     return this.parseTopLevel(node)
   };
 
-  prototypeAccessors.inFunction.get = function () { return (this.currentVarScope().flags & SCOPE_FUNCTION) > 0 };
+  prototypeAccessors.inFunction.get = function $get() { return (this.currentVarScope().flags & SCOPE_FUNCTION) > 0 };
 
-  prototypeAccessors.inGenerator.get = function () { return (this.currentVarScope().flags & SCOPE_GENERATOR) > 0 };
+  prototypeAccessors.inGenerator.get = function $get() { return (this.currentVarScope().flags & SCOPE_GENERATOR) > 0 };
 
-  prototypeAccessors.inAsync.get = function () { return (this.currentVarScope().flags & SCOPE_ASYNC) > 0 };
+  prototypeAccessors.inAsync.get = function $get() { return (this.currentVarScope().flags & SCOPE_ASYNC) > 0 };
 
-  prototypeAccessors.canAwait.get = function () {
+  prototypeAccessors.canAwait.get = function $get() {
     for (var i = this.scopeStack.length - 1; i >= 0; i--) {
       var ref = this.scopeStack[i];
         var flags = ref.flags;
@@ -8174,17 +8172,17 @@ if (true) {
     return (this.inModule && this.options.ecmaVersion >= 13) || this.options.allowAwaitOutsideFunction
   };
 
-  prototypeAccessors.allowSuper.get = function () {
+  prototypeAccessors.allowSuper.get = function $get() {
     var ref = this.currentThisScope();
       var flags = ref.flags;
     return (flags & SCOPE_SUPER) > 0 || this.options.allowSuperOutsideMethod
   };
 
-  prototypeAccessors.allowDirectSuper.get = function () { return (this.currentThisScope().flags & SCOPE_DIRECT_SUPER) > 0 };
+  prototypeAccessors.allowDirectSuper.get = function $get() { return (this.currentThisScope().flags & SCOPE_DIRECT_SUPER) > 0 };
 
-  prototypeAccessors.treatFunctionsAsVar.get = function () { return this.treatFunctionsAsVarInScope(this.currentScope()) };
+  prototypeAccessors.treatFunctionsAsVar.get = function $get() { return this.treatFunctionsAsVarInScope(this.currentScope()) };
 
-  prototypeAccessors.allowNewDotTarget.get = function () {
+  prototypeAccessors.allowNewDotTarget.get = function $get() {
     for (var i = this.scopeStack.length - 1; i >= 0; i--) {
       var ref = this.scopeStack[i];
         var flags = ref.flags;
@@ -8194,7 +8192,7 @@ if (true) {
     return false
   };
 
-  prototypeAccessors.inClassStaticBlock.get = function () {
+  prototypeAccessors.inClassStaticBlock.get = function $get() {
     return (this.currentVarScope().flags & SCOPE_CLASS_STATIC_BLOCK) > 0
   };
 
@@ -8228,7 +8226,7 @@ if (true) {
   // ## Parser utilities
 
   var literal = /^(?:'((?:\\[^]|[^'\\])*?)'|"((?:\\[^]|[^"\\])*?)")/;
-  pp$9.strictDirective = function(start) {
+  pp$9.strictDirective = function $strictDirective(start) {
     if (this.options.ecmaVersion < 5) { return false }
     for (;;) {
       // Try to find string literal.
@@ -8257,7 +8255,7 @@ if (true) {
   // Predicate that tests whether the next token is of the given
   // type, and if yes, consumes it as a side effect.
 
-  pp$9.eat = function(type) {
+  pp$9.eat = function $eat(type) {
     if (this.type === type) {
       this.next();
       return true
@@ -8268,13 +8266,13 @@ if (true) {
 
   // Tests whether parsed token is a contextual keyword.
 
-  pp$9.isContextual = function(name) {
+  pp$9.isContextual = function $isContextual(name) {
     return this.type === types$1.name && this.value === name && !this.containsEsc
   };
 
   // Consumes contextual keyword if possible.
 
-  pp$9.eatContextual = function(name) {
+  pp$9.eatContextual = function $eatContextual(name) {
     if (!this.isContextual(name)) { return false }
     this.next();
     return true
@@ -8282,19 +8280,19 @@ if (true) {
 
   // Asserts that following token is given contextual keyword.
 
-  pp$9.expectContextual = function(name) {
+  pp$9.expectContextual = function $expectContextual(name) {
     if (!this.eatContextual(name)) { this.unexpected(); }
   };
 
   // Test whether a semicolon can be inserted at the current position.
 
-  pp$9.canInsertSemicolon = function() {
+  pp$9.canInsertSemicolon = function $canInsertSemicolon() {
     return this.type === types$1.eof ||
       this.type === types$1.braceR ||
       lineBreak.test(this.input.slice(this.lastTokEnd, this.start))
   };
 
-  pp$9.insertSemicolon = function() {
+  pp$9.insertSemicolon = function $insertSemicolon() {
     if (this.canInsertSemicolon()) {
       if (this.options.onInsertedSemicolon)
         { this.options.onInsertedSemicolon(this.lastTokEnd, this.lastTokEndLoc); }
@@ -8305,11 +8303,11 @@ if (true) {
   // Consume a semicolon, or, failing that, see if we are allowed to
   // pretend that there is a semicolon at this position.
 
-  pp$9.semicolon = function() {
+  pp$9.semicolon = function $semicolon() {
     if (!this.eat(types$1.semi) && !this.insertSemicolon()) { this.unexpected(); }
   };
 
-  pp$9.afterTrailingComma = function(tokType, notNext) {
+  pp$9.afterTrailingComma = function $afterTrailingComma(tokType, notNext) {
     if (this.type === tokType) {
       if (this.options.onTrailingComma)
         { this.options.onTrailingComma(this.lastTokStart, this.lastTokStartLoc); }
@@ -8322,13 +8320,13 @@ if (true) {
   // Expect a token of a given type. If found, consume it, otherwise,
   // raise an unexpected token error.
 
-  pp$9.expect = function(type) {
+  pp$9.expect = function $expect(type) {
     this.eat(type) || this.unexpected();
   };
 
   // Raise an unexpected token error.
 
-  pp$9.unexpected = function(pos) {
+  pp$9.unexpected = function $unexpected(pos) {
     this.raise(pos != null ? pos : this.start, "Unexpected token");
   };
 
@@ -8341,7 +8339,7 @@ if (true) {
       -1;
   };
 
-  pp$9.checkPatternErrors = function(refDestructuringErrors, isAssign) {
+  pp$9.checkPatternErrors = function $checkPatternErrors(refDestructuringErrors, isAssign) {
     if (!refDestructuringErrors) { return }
     if (refDestructuringErrors.trailingComma > -1)
       { this.raiseRecoverable(refDestructuringErrors.trailingComma, "Comma is not permitted after the rest element"); }
@@ -8349,7 +8347,7 @@ if (true) {
     if (parens > -1) { this.raiseRecoverable(parens, isAssign ? "Assigning to rvalue" : "Parenthesized pattern"); }
   };
 
-  pp$9.checkExpressionErrors = function(refDestructuringErrors, andThrow) {
+  pp$9.checkExpressionErrors = function $checkExpressionErrors(refDestructuringErrors, andThrow) {
     if (!refDestructuringErrors) { return false }
     var shorthandAssign = refDestructuringErrors.shorthandAssign;
     var doubleProto = refDestructuringErrors.doubleProto;
@@ -8360,14 +8358,14 @@ if (true) {
       { this.raiseRecoverable(doubleProto, "Redefinition of __proto__ property"); }
   };
 
-  pp$9.checkYieldAwaitInDefaultParams = function() {
+  pp$9.checkYieldAwaitInDefaultParams = function $checkYieldAwaitInDefaultParams() {
     if (this.yieldPos && (!this.awaitPos || this.yieldPos < this.awaitPos))
       { this.raise(this.yieldPos, "Yield expression cannot be a default value"); }
     if (this.awaitPos)
       { this.raise(this.awaitPos, "Await expression cannot be a default value"); }
   };
 
-  pp$9.isSimpleAssignTarget = function(expr) {
+  pp$9.isSimpleAssignTarget = function $isSimpleAssignTarget(expr) {
     if (expr.type === "ParenthesizedExpression")
       { return this.isSimpleAssignTarget(expr.expression) }
     return expr.type === "Identifier" || expr.type === "MemberExpression"
@@ -8382,7 +8380,7 @@ if (true) {
   // `program` argument.  If present, the statements will be appended
   // to its body instead of creating a new node.
 
-  pp$8.parseTopLevel = function(node) {
+  pp$8.parseTopLevel = function $parseTopLevel(node) {
     var exports = Object.create(null);
     if (!node.body) { node.body = []; }
     while (this.type !== types$1.eof) {
@@ -8404,7 +8402,7 @@ if (true) {
 
   var loopLabel = {kind: "loop"}, switchLabel = {kind: "switch"};
 
-  pp$8.isLet = function(context) {
+  pp$8.isLet = function $isLet(context) {
     if (this.options.ecmaVersion < 6 || !this.isContextual("let")) { return false }
     skipWhiteSpace.lastIndex = this.pos;
     var skip = skipWhiteSpace.exec(this.input);
@@ -8430,7 +8428,7 @@ if (true) {
   // check 'async [no LineTerminator here] function'
   // - 'async /*foo*/ function' is OK.
   // - 'async /*\n*/ function' is invalid.
-  pp$8.isAsyncFunction = function() {
+  pp$8.isAsyncFunction = function $isAsyncFunction() {
     if (this.options.ecmaVersion < 8 || !this.isContextual("async"))
       { return false }
 
@@ -8443,7 +8441,7 @@ if (true) {
        !(isIdentifierChar(after = this.input.charCodeAt(next + 8)) || after > 0xd7ff && after < 0xdc00))
   };
 
-  pp$8.isUsingKeyword = function(isAwaitUsing, isFor) {
+  pp$8.isUsingKeyword = function $isUsingKeyword(isAwaitUsing, isFor) {
     if (this.options.ecmaVersion < 17 || !this.isContextual(isAwaitUsing ? "await" : "using"))
       { return false }
 
@@ -8478,11 +8476,11 @@ if (true) {
     return isIdentifierStart(ch, true) || ch === 92 // '\'
   };
 
-  pp$8.isAwaitUsing = function(isFor) {
+  pp$8.isAwaitUsing = function $isAwaitUsing(isFor) {
     return this.isUsingKeyword(true, isFor)
   };
 
-  pp$8.isUsing = function(isFor) {
+  pp$8.isUsing = function $isUsing(isFor) {
     return this.isUsingKeyword(false, isFor)
   };
 
@@ -8493,7 +8491,7 @@ if (true) {
   // `if (foo) /blah/.exec(foo)`, where looking at the previous token
   // does not help.
 
-  pp$8.parseStatement = function(context, topLevel, exports) {
+  pp$8.parseStatement = function $parseStatement(context, topLevel, exports) {
     var starttype = this.type, node = this.startNode(), kind;
 
     if (this.isLet(context)) {
@@ -8586,7 +8584,7 @@ if (true) {
     }
   };
 
-  pp$8.parseBreakContinueStatement = function(node, keyword) {
+  pp$8.parseBreakContinueStatement = function $parseBreakContinueStatement(node, keyword) {
     var isBreak = keyword === "break";
     this.next();
     if (this.eat(types$1.semi) || this.insertSemicolon()) { node.label = null; }
@@ -8610,13 +8608,13 @@ if (true) {
     return this.finishNode(node, isBreak ? "BreakStatement" : "ContinueStatement")
   };
 
-  pp$8.parseDebuggerStatement = function(node) {
+  pp$8.parseDebuggerStatement = function $parseDebuggerStatement(node) {
     this.next();
     this.semicolon();
     return this.finishNode(node, "DebuggerStatement")
   };
 
-  pp$8.parseDoStatement = function(node) {
+  pp$8.parseDoStatement = function $parseDoStatement(node) {
     this.next();
     this.labels.push(loopLabel);
     node.body = this.parseStatement("do");
@@ -8638,7 +8636,7 @@ if (true) {
   // part (semicolon immediately after the opening parenthesis), it
   // is a regular `for` loop.
 
-  pp$8.parseForStatement = function(node) {
+  pp$8.parseForStatement = function $parseForStatement(node) {
     this.next();
     var awaitAt = (this.options.ecmaVersion >= 9 && this.canAwait && this.eatContextual("await")) ? this.lastTokStart : -1;
     this.labels.push(loopLabel);
@@ -8693,7 +8691,7 @@ if (true) {
   };
 
   // Helper method to parse for loop after variable initialization
-  pp$8.parseForAfterInit = function(node, init, awaitAt) {
+  pp$8.parseForAfterInit = function $parseForAfterInit(node, init, awaitAt) {
     if ((this.type === types$1._in || (this.options.ecmaVersion >= 6 && this.isContextual("of"))) && init.declarations.length === 1) {
       if (this.options.ecmaVersion >= 9) {
         if (this.type === types$1._in) {
@@ -8706,12 +8704,12 @@ if (true) {
     return this.parseFor(node, init)
   };
 
-  pp$8.parseFunctionStatement = function(node, isAsync, declarationPosition) {
+  pp$8.parseFunctionStatement = function $parseFunctionStatement(node, isAsync, declarationPosition) {
     this.next();
     return this.parseFunction(node, FUNC_STATEMENT | (declarationPosition ? 0 : FUNC_HANGING_STATEMENT), false, isAsync)
   };
 
-  pp$8.parseIfStatement = function(node) {
+  pp$8.parseIfStatement = function $parseIfStatement(node) {
     this.next();
     node.test = this.parseParenExpression();
     // allow function declarations in branches, but only in non-strict mode
@@ -8720,7 +8718,7 @@ if (true) {
     return this.finishNode(node, "IfStatement")
   };
 
-  pp$8.parseReturnStatement = function(node) {
+  pp$8.parseReturnStatement = function $parseReturnStatement(node) {
     if (!this.inFunction && !this.options.allowReturnOutsideFunction)
       { this.raise(this.start, "'return' outside of function"); }
     this.next();
@@ -8734,7 +8732,7 @@ if (true) {
     return this.finishNode(node, "ReturnStatement")
   };
 
-  pp$8.parseSwitchStatement = function(node) {
+  pp$8.parseSwitchStatement = function $parseSwitchStatement(node) {
     this.next();
     node.discriminant = this.parseParenExpression();
     node.cases = [];
@@ -8774,7 +8772,7 @@ if (true) {
     return this.finishNode(node, "SwitchStatement")
   };
 
-  pp$8.parseThrowStatement = function(node) {
+  pp$8.parseThrowStatement = function $parseThrowStatement(node) {
     this.next();
     if (lineBreak.test(this.input.slice(this.lastTokEnd, this.start)))
       { this.raise(this.lastTokEnd, "Illegal newline after throw"); }
@@ -8787,7 +8785,7 @@ if (true) {
 
   var empty$1 = [];
 
-  pp$8.parseCatchClauseParam = function() {
+  pp$8.parseCatchClauseParam = function $parseCatchClauseParam() {
     var param = this.parseBindingAtom();
     var simple = param.type === "Identifier";
     this.enterScope(simple ? SCOPE_SIMPLE_CATCH : 0);
@@ -8797,7 +8795,7 @@ if (true) {
     return param
   };
 
-  pp$8.parseTryStatement = function(node) {
+  pp$8.parseTryStatement = function $parseTryStatement(node) {
     this.next();
     node.block = this.parseBlock();
     node.handler = null;
@@ -8821,14 +8819,14 @@ if (true) {
     return this.finishNode(node, "TryStatement")
   };
 
-  pp$8.parseVarStatement = function(node, kind, allowMissingInitializer) {
+  pp$8.parseVarStatement = function $parseVarStatement(node, kind, allowMissingInitializer) {
     this.next();
     this.parseVar(node, false, kind, allowMissingInitializer);
     this.semicolon();
     return this.finishNode(node, "VariableDeclaration")
   };
 
-  pp$8.parseWhileStatement = function(node) {
+  pp$8.parseWhileStatement = function $parseWhileStatement(node) {
     this.next();
     node.test = this.parseParenExpression();
     this.labels.push(loopLabel);
@@ -8837,7 +8835,7 @@ if (true) {
     return this.finishNode(node, "WhileStatement")
   };
 
-  pp$8.parseWithStatement = function(node) {
+  pp$8.parseWithStatement = function $parseWithStatement(node) {
     if (this.strict) { this.raise(this.start, "'with' in strict mode"); }
     this.next();
     node.object = this.parseParenExpression();
@@ -8845,12 +8843,12 @@ if (true) {
     return this.finishNode(node, "WithStatement")
   };
 
-  pp$8.parseEmptyStatement = function(node) {
+  pp$8.parseEmptyStatement = function $parseEmptyStatement(node) {
     this.next();
     return this.finishNode(node, "EmptyStatement")
   };
 
-  pp$8.parseLabeledStatement = function(node, maybeName, expr, context) {
+  pp$8.parseLabeledStatement = function $parseLabeledStatement(node, maybeName, expr, context) {
     for (var i$1 = 0, list = this.labels; i$1 < list.length; i$1 += 1)
       {
       var label = list[i$1];
@@ -8874,7 +8872,7 @@ if (true) {
     return this.finishNode(node, "LabeledStatement")
   };
 
-  pp$8.parseExpressionStatement = function(node, expr) {
+  pp$8.parseExpressionStatement = function $parseExpressionStatement(node, expr) {
     node.expression = expr;
     this.semicolon();
     return this.finishNode(node, "ExpressionStatement")
@@ -8884,7 +8882,7 @@ if (true) {
   // strict"` declarations when `allowStrict` is true (used for
   // function bodies).
 
-  pp$8.parseBlock = function(createNewLexicalScope, node, exitStrict) {
+  pp$8.parseBlock = function $parseBlock(createNewLexicalScope, node, exitStrict) {
     if ( createNewLexicalScope === void 0 ) createNewLexicalScope = true;
     if ( node === void 0 ) node = this.startNode();
 
@@ -8905,7 +8903,7 @@ if (true) {
   // `parseStatement` will already have parsed the init statement or
   // expression.
 
-  pp$8.parseFor = function(node, init) {
+  pp$8.parseFor = function $parseFor(node, init) {
     node.init = init;
     this.expect(types$1.semi);
     node.test = this.type === types$1.semi ? null : this.parseExpression();
@@ -8921,7 +8919,7 @@ if (true) {
   // Parse a `for`/`in` and `for`/`of` loop, which are almost
   // same from parser's perspective.
 
-  pp$8.parseForIn = function(node, init) {
+  pp$8.parseForIn = function $parseForIn(node, init) {
     var isForIn = this.type === types$1._in;
     this.next();
 
@@ -8952,7 +8950,7 @@ if (true) {
 
   // Parse a list of variable declarations.
 
-  pp$8.parseVar = function(node, isFor, kind, allowMissingInitializer) {
+  pp$8.parseVar = function $parseVar(node, isFor, kind, allowMissingInitializer) {
     node.declarations = [];
     node.kind = kind;
     for (;;) {
@@ -8975,7 +8973,7 @@ if (true) {
     return node
   };
 
-  pp$8.parseVarId = function(decl, kind) {
+  pp$8.parseVarId = function $parseVarId(decl, kind) {
     decl.id = kind === "using" || kind === "await using"
       ? this.parseIdent()
       : this.parseBindingAtom();
@@ -8989,7 +8987,7 @@ if (true) {
   // `statement & FUNC_STATEMENT`).
 
   // Remove `allowExpressionBody` for 7.0.0, as it is only called with false
-  pp$8.parseFunction = function(node, statement, allowExpressionBody, isAsync, forInit) {
+  pp$8.parseFunction = function $parseFunction(node, statement, allowExpressionBody, isAsync, forInit) {
     this.initFunction(node);
     if (this.options.ecmaVersion >= 9 || this.options.ecmaVersion >= 6 && !isAsync) {
       if (this.type === types$1.star && (statement & FUNC_HANGING_STATEMENT))
@@ -9027,7 +9025,7 @@ if (true) {
     return this.finishNode(node, (statement & FUNC_STATEMENT) ? "FunctionDeclaration" : "FunctionExpression")
   };
 
-  pp$8.parseFunctionParams = function(node) {
+  pp$8.parseFunctionParams = function $parseFunctionParams(node) {
     this.expect(types$1.parenL);
     node.params = this.parseBindingList(types$1.parenR, false, this.options.ecmaVersion >= 8);
     this.checkYieldAwaitInDefaultParams();
@@ -9036,7 +9034,7 @@ if (true) {
   // Parse a class declaration or literal (depending on the
   // `isStatement` parameter).
 
-  pp$8.parseClass = function(node, isStatement) {
+  pp$8.parseClass = function $parseClass(node, isStatement) {
     this.next();
 
     // ecma-262 14.6 Class Definitions
@@ -9070,7 +9068,7 @@ if (true) {
     return this.finishNode(node, isStatement ? "ClassDeclaration" : "ClassExpression")
   };
 
-  pp$8.parseClassElement = function(constructorAllowsSuper) {
+  pp$8.parseClassElement = function $parseClassElement(constructorAllowsSuper) {
     if (this.eat(types$1.semi)) { return null }
 
     var ecmaVersion = this.options.ecmaVersion;
@@ -9142,7 +9140,7 @@ if (true) {
     return node
   };
 
-  pp$8.isClassElementNameStart = function() {
+  pp$8.isClassElementNameStart = function $isClassElementNameStart() {
     return (
       this.type === types$1.name ||
       this.type === types$1.privateId ||
@@ -9153,7 +9151,7 @@ if (true) {
     )
   };
 
-  pp$8.parseClassElementName = function(element) {
+  pp$8.parseClassElementName = function $parseClassElementName(element) {
     if (this.type === types$1.privateId) {
       if (this.value === "constructor") {
         this.raise(this.start, "Classes can't have an element named '#constructor'");
@@ -9165,7 +9163,7 @@ if (true) {
     }
   };
 
-  pp$8.parseClassMethod = function(method, isGenerator, isAsync, allowsDirectSuper) {
+  pp$8.parseClassMethod = function $parseClassMethod(method, isGenerator, isAsync, allowsDirectSuper) {
     // Check key and flags
     var key = method.key;
     if (method.kind === "constructor") {
@@ -9189,7 +9187,7 @@ if (true) {
     return this.finishNode(method, "MethodDefinition")
   };
 
-  pp$8.parseClassField = function(field) {
+  pp$8.parseClassField = function $parseClassField(field) {
     if (checkKeyName(field, "constructor")) {
       this.raise(field.key.start, "Classes can't have a field named 'constructor'");
     } else if (field.static && checkKeyName(field, "prototype")) {
@@ -9209,7 +9207,7 @@ if (true) {
     return this.finishNode(field, "PropertyDefinition")
   };
 
-  pp$8.parseClassStaticBlock = function(node) {
+  pp$8.parseClassStaticBlock = function $parseClassStaticBlock(node) {
     node.body = [];
 
     var oldLabels = this.labels;
@@ -9226,7 +9224,7 @@ if (true) {
     return this.finishNode(node, "StaticBlock")
   };
 
-  pp$8.parseClassId = function(node, isStatement) {
+  pp$8.parseClassId = function $parseClassId(node, isStatement) {
     if (this.type === types$1.name) {
       node.id = this.parseIdent();
       if (isStatement)
@@ -9238,17 +9236,17 @@ if (true) {
     }
   };
 
-  pp$8.parseClassSuper = function(node) {
+  pp$8.parseClassSuper = function $parseClassSuper(node) {
     node.superClass = this.eat(types$1._extends) ? this.parseExprSubscripts(null, false) : null;
   };
 
-  pp$8.enterClassBody = function() {
+  pp$8.enterClassBody = function $enterClassBody() {
     var element = {declared: Object.create(null), used: []};
     this.privateNameStack.push(element);
     return element.declared
   };
 
-  pp$8.exitClassBody = function() {
+  pp$8.exitClassBody = function $exitClassBody() {
     var ref = this.privateNameStack.pop();
     var declared = ref.declared;
     var used = ref.used;
@@ -9304,7 +9302,7 @@ if (true) {
 
   // Parses module export declaration.
 
-  pp$8.parseExportAllDeclaration = function(node, exports) {
+  pp$8.parseExportAllDeclaration = function $parseExportAllDeclaration(node, exports) {
     if (this.options.ecmaVersion >= 11) {
       if (this.eatContextual("as")) {
         node.exported = this.parseModuleExportName();
@@ -9322,7 +9320,7 @@ if (true) {
     return this.finishNode(node, "ExportAllDeclaration")
   };
 
-  pp$8.parseExport = function(node, exports) {
+  pp$8.parseExport = function $parseExport(node, exports) {
     this.next();
     // export * from '...'
     if (this.eat(types$1.star)) {
@@ -9375,11 +9373,11 @@ if (true) {
     return this.finishNode(node, "ExportNamedDeclaration")
   };
 
-  pp$8.parseExportDeclaration = function(node) {
+  pp$8.parseExportDeclaration = function $parseExportDeclaration(node) {
     return this.parseStatement(null)
   };
 
-  pp$8.parseExportDefaultDeclaration = function() {
+  pp$8.parseExportDefaultDeclaration = function $parseExportDefaultDeclaration() {
     var isAsync;
     if (this.type === types$1._function || (isAsync = this.isAsyncFunction())) {
       var fNode = this.startNode();
@@ -9396,7 +9394,7 @@ if (true) {
     }
   };
 
-  pp$8.checkExport = function(exports, name, pos) {
+  pp$8.checkExport = function $checkExport(exports, name, pos) {
     if (!exports) { return }
     if (typeof name !== "string")
       { name = name.type === "Identifier" ? name.name : name.value; }
@@ -9405,7 +9403,7 @@ if (true) {
     exports[name] = true;
   };
 
-  pp$8.checkPatternExport = function(exports, pat) {
+  pp$8.checkPatternExport = function $checkPatternExport(exports, pat) {
     var type = pat.type;
     if (type === "Identifier")
       { this.checkExport(exports, pat, pat.start); }
@@ -9430,7 +9428,7 @@ if (true) {
       { this.checkPatternExport(exports, pat.argument); }
   };
 
-  pp$8.checkVariableExport = function(exports, decls) {
+  pp$8.checkVariableExport = function $checkVariableExport(exports, decls) {
     if (!exports) { return }
     for (var i = 0, list = decls; i < list.length; i += 1)
       {
@@ -9440,7 +9438,7 @@ if (true) {
     }
   };
 
-  pp$8.shouldParseExportStatement = function() {
+  pp$8.shouldParseExportStatement = function $shouldParseExportStatement() {
     return this.type.keyword === "var" ||
       this.type.keyword === "const" ||
       this.type.keyword === "class" ||
@@ -9451,7 +9449,7 @@ if (true) {
 
   // Parses a comma-separated list of module exports.
 
-  pp$8.parseExportSpecifier = function(exports) {
+  pp$8.parseExportSpecifier = function $parseExportSpecifier(exports) {
     var node = this.startNode();
     node.local = this.parseModuleExportName();
 
@@ -9465,7 +9463,7 @@ if (true) {
     return this.finishNode(node, "ExportSpecifier")
   };
 
-  pp$8.parseExportSpecifiers = function(exports) {
+  pp$8.parseExportSpecifiers = function $parseExportSpecifiers(exports) {
     var nodes = [], first = true;
     // export { x, y as z } [from '...']
     this.expect(types$1.braceL);
@@ -9482,7 +9480,7 @@ if (true) {
 
   // Parses import declaration.
 
-  pp$8.parseImport = function(node) {
+  pp$8.parseImport = function $parseImport(node) {
     this.next();
 
     // import '...'
@@ -9502,7 +9500,7 @@ if (true) {
 
   // Parses a comma-separated list of module imports.
 
-  pp$8.parseImportSpecifier = function() {
+  pp$8.parseImportSpecifier = function $parseImportSpecifier() {
     var node = this.startNode();
     node.imported = this.parseModuleExportName();
 
@@ -9517,7 +9515,7 @@ if (true) {
     return this.finishNode(node, "ImportSpecifier")
   };
 
-  pp$8.parseImportDefaultSpecifier = function() {
+  pp$8.parseImportDefaultSpecifier = function $parseImportDefaultSpecifier() {
     // import defaultObj, { x, y as z } from '...'
     var node = this.startNode();
     node.local = this.parseIdent();
@@ -9525,7 +9523,7 @@ if (true) {
     return this.finishNode(node, "ImportDefaultSpecifier")
   };
 
-  pp$8.parseImportNamespaceSpecifier = function() {
+  pp$8.parseImportNamespaceSpecifier = function $parseImportNamespaceSpecifier() {
     var node = this.startNode();
     this.next();
     this.expectContextual("as");
@@ -9534,7 +9532,7 @@ if (true) {
     return this.finishNode(node, "ImportNamespaceSpecifier")
   };
 
-  pp$8.parseImportSpecifiers = function() {
+  pp$8.parseImportSpecifiers = function $parseImportSpecifiers() {
     var nodes = [], first = true;
     if (this.type === types$1.name) {
       nodes.push(this.parseImportDefaultSpecifier());
@@ -9556,7 +9554,7 @@ if (true) {
     return nodes
   };
 
-  pp$8.parseWithClause = function() {
+  pp$8.parseWithClause = function $parseWithClause() {
     var nodes = [];
     if (!this.eat(types$1._with)) {
       return nodes
@@ -9580,7 +9578,7 @@ if (true) {
     return nodes
   };
 
-  pp$8.parseImportAttribute = function() {
+  pp$8.parseImportAttribute = function $parseImportAttribute() {
     var node = this.startNode();
     node.key = this.type === types$1.string ? this.parseExprAtom() : this.parseIdent(this.options.allowReserved !== "never");
     this.expect(types$1.colon);
@@ -9591,7 +9589,7 @@ if (true) {
     return this.finishNode(node, "ImportAttribute")
   };
 
-  pp$8.parseModuleExportName = function() {
+  pp$8.parseModuleExportName = function $parseModuleExportName() {
     if (this.options.ecmaVersion >= 13 && this.type === types$1.string) {
       var stringLiteral = this.parseLiteral(this.value);
       if (loneSurrogate.test(stringLiteral.value)) {
@@ -9603,12 +9601,12 @@ if (true) {
   };
 
   // Set `ExpressionStatement#directive` property for directive prologues.
-  pp$8.adaptDirectivePrologue = function(statements) {
+  pp$8.adaptDirectivePrologue = function $adaptDirectivePrologue(statements) {
     for (var i = 0; i < statements.length && this.isDirectiveCandidate(statements[i]); ++i) {
       statements[i].directive = statements[i].expression.raw.slice(1, -1);
     }
   };
-  pp$8.isDirectiveCandidate = function(statement) {
+  pp$8.isDirectiveCandidate = function $isDirectiveCandidate(statement) {
     return (
       this.options.ecmaVersion >= 5 &&
       statement.type === "ExpressionStatement" &&
@@ -9624,7 +9622,7 @@ if (true) {
   // Convert existing expression atom to assignable pattern
   // if possible.
 
-  pp$7.toAssignable = function(node, isBinding, refDestructuringErrors) {
+  pp$7.toAssignable = function $toAssignable(node, isBinding, refDestructuringErrors) {
     if (this.options.ecmaVersion >= 6 && node) {
       switch (node.type) {
       case "Identifier":
@@ -9705,7 +9703,7 @@ if (true) {
 
   // Convert list of expression atoms to binding list.
 
-  pp$7.toAssignableList = function(exprList, isBinding) {
+  pp$7.toAssignableList = function $toAssignableList(exprList, isBinding) {
     var end = exprList.length;
     for (var i = 0; i < end; i++) {
       var elt = exprList[i];
@@ -9721,14 +9719,14 @@ if (true) {
 
   // Parses spread element.
 
-  pp$7.parseSpread = function(refDestructuringErrors) {
+  pp$7.parseSpread = function $parseSpread(refDestructuringErrors) {
     var node = this.startNode();
     this.next();
     node.argument = this.parseMaybeAssign(false, refDestructuringErrors);
     return this.finishNode(node, "SpreadElement")
   };
 
-  pp$7.parseRestBinding = function() {
+  pp$7.parseRestBinding = function $parseRestBinding() {
     var node = this.startNode();
     this.next();
 
@@ -9743,7 +9741,7 @@ if (true) {
 
   // Parses lvalue (assignable) atom.
 
-  pp$7.parseBindingAtom = function() {
+  pp$7.parseBindingAtom = function $parseBindingAtom() {
     if (this.options.ecmaVersion >= 6) {
       switch (this.type) {
       case types$1.bracketL:
@@ -9759,7 +9757,7 @@ if (true) {
     return this.parseIdent()
   };
 
-  pp$7.parseBindingList = function(close, allowEmpty, allowTrailingComma, allowModifiers) {
+  pp$7.parseBindingList = function $parseBindingList(close, allowEmpty, allowTrailingComma, allowModifiers) {
     var elts = [], first = true;
     while (!this.eat(close)) {
       if (first) { first = false; }
@@ -9782,19 +9780,19 @@ if (true) {
     return elts
   };
 
-  pp$7.parseAssignableListItem = function(allowModifiers) {
+  pp$7.parseAssignableListItem = function $parseAssignableListItem(allowModifiers) {
     var elem = this.parseMaybeDefault(this.start, this.startLoc);
     this.parseBindingListItem(elem);
     return elem
   };
 
-  pp$7.parseBindingListItem = function(param) {
+  pp$7.parseBindingListItem = function $parseBindingListItem(param) {
     return param
   };
 
   // Parses assignment pattern around given atom if possible.
 
-  pp$7.parseMaybeDefault = function(startPos, startLoc, left) {
+  pp$7.parseMaybeDefault = function $parseMaybeDefault(startPos, startLoc, left) {
     left = left || this.parseBindingAtom();
     if (this.options.ecmaVersion < 6 || !this.eat(types$1.eq)) { return left }
     var node = this.startNodeAt(startPos, startLoc);
@@ -9867,7 +9865,7 @@ if (true) {
   // duplicate argument names. checkClashes is ignored if the provided construct
   // is an assignment (i.e., bindingType is BIND_NONE).
 
-  pp$7.checkLValSimple = function(expr, bindingType, checkClashes) {
+  pp$7.checkLValSimple = function $checkLValSimple(expr, bindingType, checkClashes) {
     if ( bindingType === void 0 ) bindingType = BIND_NONE;
 
     var isBind = bindingType !== BIND_NONE;
@@ -9905,7 +9903,7 @@ if (true) {
     }
   };
 
-  pp$7.checkLValPattern = function(expr, bindingType, checkClashes) {
+  pp$7.checkLValPattern = function $checkLValPattern(expr, bindingType, checkClashes) {
     if ( bindingType === void 0 ) bindingType = BIND_NONE;
 
     switch (expr.type) {
@@ -9930,7 +9928,7 @@ if (true) {
     }
   };
 
-  pp$7.checkLValInnerPattern = function(expr, bindingType, checkClashes) {
+  pp$7.checkLValInnerPattern = function $checkLValInnerPattern(expr, bindingType, checkClashes) {
     if ( bindingType === void 0 ) bindingType = BIND_NONE;
 
     switch (expr.type) {
@@ -9980,15 +9978,15 @@ if (true) {
 
   var pp$6 = Parser.prototype;
 
-  pp$6.initialContext = function() {
+  pp$6.initialContext = function $initialContext() {
     return [types.b_stat]
   };
 
-  pp$6.curContext = function() {
+  pp$6.curContext = function $curContext() {
     return this.context[this.context.length - 1]
   };
 
-  pp$6.braceIsBlock = function(prevType) {
+  pp$6.braceIsBlock = function $braceIsBlock(prevType) {
     var parent = this.curContext();
     if (parent === types.f_expr || parent === types.f_stat)
       { return true }
@@ -10009,7 +10007,7 @@ if (true) {
     return !this.exprAllowed
   };
 
-  pp$6.inGeneratorContext = function() {
+  pp$6.inGeneratorContext = function $inGeneratorContext() {
     for (var i = this.context.length - 1; i >= 1; i--) {
       var context = this.context[i];
       if (context.token === "function")
@@ -10018,7 +10016,7 @@ if (true) {
     return false
   };
 
-  pp$6.updateContext = function(prevType) {
+  pp$6.updateContext = function $updateContext(prevType) {
     var update, type = this.type;
     if (type.keyword && prevType === types$1.dot)
       { this.exprAllowed = false; }
@@ -10030,7 +10028,7 @@ if (true) {
 
   // Used to handle edge cases when token context could not be inferred correctly during tokenization phase
 
-  pp$6.overrideContext = function(tokenCtx) {
+  pp$6.overrideContext = function $overrideContext(tokenCtx) {
     if (this.curContext() !== tokenCtx) {
       this.context[this.context.length - 1] = tokenCtx;
     }
@@ -10038,7 +10036,7 @@ if (true) {
 
   // Token-specific context update code
 
-  types$1.parenR.updateContext = types$1.braceR.updateContext = function() {
+  types$1.parenR.updateContext = types$1.braceR.updateContext = function $updateContext() {
     if (this.context.length === 1) {
       this.exprAllowed = true;
       return
@@ -10050,27 +10048,27 @@ if (true) {
     this.exprAllowed = !out.isExpr;
   };
 
-  types$1.braceL.updateContext = function(prevType) {
+  types$1.braceL.updateContext = function $updateContext(prevType) {
     this.context.push(this.braceIsBlock(prevType) ? types.b_stat : types.b_expr);
     this.exprAllowed = true;
   };
 
-  types$1.dollarBraceL.updateContext = function() {
+  types$1.dollarBraceL.updateContext = function $updateContext() {
     this.context.push(types.b_tmpl);
     this.exprAllowed = true;
   };
 
-  types$1.parenL.updateContext = function(prevType) {
+  types$1.parenL.updateContext = function $updateContext(prevType) {
     var statementParens = prevType === types$1._if || prevType === types$1._for || prevType === types$1._with || prevType === types$1._while;
     this.context.push(statementParens ? types.p_stat : types.p_expr);
     this.exprAllowed = true;
   };
 
-  types$1.incDec.updateContext = function() {
+  types$1.incDec.updateContext = function $updateContext() {
     // tokExprAllowed stays unchanged
   };
 
-  types$1._function.updateContext = types$1._class.updateContext = function(prevType) {
+  types$1._function.updateContext = types$1._class.updateContext = function $updateContext(prevType) {
     if (prevType.beforeExpr && prevType !== types$1._else &&
         !(prevType === types$1.semi && this.curContext() !== types.p_stat) &&
         !(prevType === types$1._return && lineBreak.test(this.input.slice(this.lastTokEnd, this.start))) &&
@@ -10081,12 +10079,12 @@ if (true) {
     this.exprAllowed = false;
   };
 
-  types$1.colon.updateContext = function() {
+  types$1.colon.updateContext = function $updateContext() {
     if (this.curContext().token === "function") { this.context.pop(); }
     this.exprAllowed = true;
   };
 
-  types$1.backQuote.updateContext = function() {
+  types$1.backQuote.updateContext = function $updateContext() {
     if (this.curContext() === types.q_tmpl)
       { this.context.pop(); }
     else
@@ -10094,7 +10092,7 @@ if (true) {
     this.exprAllowed = false;
   };
 
-  types$1.star.updateContext = function(prevType) {
+  types$1.star.updateContext = function $updateContext(prevType) {
     if (prevType === types$1._function) {
       var index = this.context.length - 1;
       if (this.context[index] === types.f_expr)
@@ -10105,7 +10103,7 @@ if (true) {
     this.exprAllowed = true;
   };
 
-  types$1.name.updateContext = function(prevType) {
+  types$1.name.updateContext = function $updateContext(prevType) {
     var allowed = false;
     if (this.options.ecmaVersion >= 6 && prevType !== types$1.dot) {
       if (this.value === "of" && !this.exprAllowed ||
@@ -10141,7 +10139,7 @@ if (true) {
   // either with each other or with an init property — and in
   // strict mode, init properties are also not allowed to be repeated.
 
-  pp$5.checkPropClash = function(prop, propHash, refDestructuringErrors) {
+  pp$5.checkPropClash = function $checkPropClash(prop, propHash, refDestructuringErrors) {
     if (this.options.ecmaVersion >= 9 && prop.type === "SpreadElement")
       { return }
     if (this.options.ecmaVersion >= 6 && (prop.computed || prop.method || prop.shorthand))
@@ -10205,7 +10203,7 @@ if (true) {
   // and object pattern might appear (so it's possible to raise
   // delayed syntax error at correct position).
 
-  pp$5.parseExpression = function(forInit, refDestructuringErrors) {
+  pp$5.parseExpression = function $parseExpression(forInit, refDestructuringErrors) {
     var startPos = this.start, startLoc = this.startLoc;
     var expr = this.parseMaybeAssign(forInit, refDestructuringErrors);
     if (this.type === types$1.comma) {
@@ -10220,7 +10218,7 @@ if (true) {
   // Parse an assignment expression. This includes applications of
   // operators like `+=`.
 
-  pp$5.parseMaybeAssign = function(forInit, refDestructuringErrors, afterLeftParse) {
+  pp$5.parseMaybeAssign = function $parseMaybeAssign(forInit, refDestructuringErrors, afterLeftParse) {
     if (this.isContextual("yield")) {
       if (this.inGenerator) { return this.parseYield(forInit) }
       // The tokenizer will assume an expression is allowed after
@@ -10275,7 +10273,7 @@ if (true) {
 
   // Parse a ternary conditional (`?:`) operator.
 
-  pp$5.parseMaybeConditional = function(forInit, refDestructuringErrors) {
+  pp$5.parseMaybeConditional = function $parseMaybeConditional(forInit, refDestructuringErrors) {
     var startPos = this.start, startLoc = this.startLoc;
     var expr = this.parseExprOps(forInit, refDestructuringErrors);
     if (this.checkExpressionErrors(refDestructuringErrors)) { return expr }
@@ -10292,7 +10290,7 @@ if (true) {
 
   // Start the precedence parser.
 
-  pp$5.parseExprOps = function(forInit, refDestructuringErrors) {
+  pp$5.parseExprOps = function $parseExprOps(forInit, refDestructuringErrors) {
     var startPos = this.start, startLoc = this.startLoc;
     var expr = this.parseMaybeUnary(refDestructuringErrors, false, false, forInit);
     if (this.checkExpressionErrors(refDestructuringErrors)) { return expr }
@@ -10305,7 +10303,7 @@ if (true) {
   // defer further parser to one of its callers when it encounters an
   // operator that has a lower precedence than the set it is parsing.
 
-  pp$5.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, forInit) {
+  pp$5.parseExprOp = function $parseExprOp(left, leftStartPos, leftStartLoc, minPrec, forInit) {
     var prec = this.type.binop;
     if (prec != null && (!forInit || this.type !== types$1._in)) {
       if (prec > minPrec) {
@@ -10330,7 +10328,7 @@ if (true) {
     return left
   };
 
-  pp$5.buildBinary = function(startPos, startLoc, left, right, op, logical) {
+  pp$5.buildBinary = function $buildBinary(startPos, startLoc, left, right, op, logical) {
     if (right.type === "PrivateIdentifier") { this.raise(right.start, "Private identifier can only be left side of binary expression"); }
     var node = this.startNodeAt(startPos, startLoc);
     node.left = left;
@@ -10341,7 +10339,7 @@ if (true) {
 
   // Parse unary operators, both prefix and postfix.
 
-  pp$5.parseMaybeUnary = function(refDestructuringErrors, sawUnary, incDec, forInit) {
+  pp$5.parseMaybeUnary = function $parseMaybeUnary(refDestructuringErrors, sawUnary, incDec, forInit) {
     var startPos = this.start, startLoc = this.startLoc, expr;
     if (this.isContextual("await") && this.canAwait) {
       expr = this.parseAwait(forInit);
@@ -10406,7 +10404,7 @@ if (true) {
 
   // Parse call, dot, and `[]`-subscript expressions.
 
-  pp$5.parseExprSubscripts = function(refDestructuringErrors, forInit) {
+  pp$5.parseExprSubscripts = function $parseExprSubscripts(refDestructuringErrors, forInit) {
     var startPos = this.start, startLoc = this.startLoc;
     var expr = this.parseExprAtom(refDestructuringErrors, forInit);
     if (expr.type === "ArrowFunctionExpression" && this.input.slice(this.lastTokStart, this.lastTokEnd) !== ")")
@@ -10420,7 +10418,7 @@ if (true) {
     return result
   };
 
-  pp$5.parseSubscripts = function(base, startPos, startLoc, noCalls, forInit) {
+  pp$5.parseSubscripts = function $parseSubscripts(base, startPos, startLoc, noCalls, forInit) {
     var maybeAsyncArrow = this.options.ecmaVersion >= 8 && base.type === "Identifier" && base.name === "async" &&
         this.lastTokEnd === base.end && !this.canInsertSemicolon() && base.end - base.start === 5 &&
         this.potentialArrowAt === base.start;
@@ -10443,15 +10441,15 @@ if (true) {
     }
   };
 
-  pp$5.shouldParseAsyncArrow = function() {
+  pp$5.shouldParseAsyncArrow = function $shouldParseAsyncArrow() {
     return !this.canInsertSemicolon() && this.eat(types$1.arrow)
   };
 
-  pp$5.parseSubscriptAsyncArrow = function(startPos, startLoc, exprList, forInit) {
+  pp$5.parseSubscriptAsyncArrow = function $parseSubscriptAsyncArrow(startPos, startLoc, exprList, forInit) {
     return this.parseArrowExpression(this.startNodeAt(startPos, startLoc), exprList, true, forInit)
   };
 
-  pp$5.parseSubscript = function(base, startPos, startLoc, noCalls, maybeAsyncArrow, optionalChained, forInit) {
+  pp$5.parseSubscript = function $parseSubscript(base, startPos, startLoc, noCalls, maybeAsyncArrow, optionalChained, forInit) {
     var optionalSupported = this.options.ecmaVersion >= 11;
     var optional = optionalSupported && this.eat(types$1.questionDot);
     if (noCalls && optional) { this.raise(this.lastTokStart, "Optional chaining cannot appear in the callee of new expressions"); }
@@ -10517,7 +10515,7 @@ if (true) {
   // `new`, or an expression wrapped in punctuation like `()`, `[]`,
   // or `{}`.
 
-  pp$5.parseExprAtom = function(refDestructuringErrors, forInit, forNew) {
+  pp$5.parseExprAtom = function $parseExprAtom(refDestructuringErrors, forInit, forNew) {
     // If a division operator appears in an expression position, the
     // tokenizer got confused, and we force it to read a regexp instead.
     if (this.type === types$1.slash) { this.readRegexp(); }
@@ -10628,11 +10626,11 @@ if (true) {
     }
   };
 
-  pp$5.parseExprAtomDefault = function() {
+  pp$5.parseExprAtomDefault = function $parseExprAtomDefault() {
     this.unexpected();
   };
 
-  pp$5.parseExprImport = function(forNew) {
+  pp$5.parseExprImport = function $parseExprImport(forNew) {
     var node = this.startNode();
 
     // Consume `import` as an identifier for `import.meta`.
@@ -10652,7 +10650,7 @@ if (true) {
     }
   };
 
-  pp$5.parseDynamicImport = function(node) {
+  pp$5.parseDynamicImport = function $parseDynamicImport(node) {
     this.next(); // skip `(`
 
     // Parse node.source.
@@ -10690,7 +10688,7 @@ if (true) {
     return this.finishNode(node, "ImportExpression")
   };
 
-  pp$5.parseImportMeta = function(node) {
+  pp$5.parseImportMeta = function $parseImportMeta(node) {
     this.next(); // skip `.`
 
     var containsEsc = this.containsEsc;
@@ -10706,7 +10704,7 @@ if (true) {
     return this.finishNode(node, "MetaProperty")
   };
 
-  pp$5.parseLiteral = function(value) {
+  pp$5.parseLiteral = function $parseLiteral(value) {
     var node = this.startNode();
     node.value = value;
     node.raw = this.input.slice(this.start, this.end);
@@ -10716,18 +10714,18 @@ if (true) {
     return this.finishNode(node, "Literal")
   };
 
-  pp$5.parseParenExpression = function() {
+  pp$5.parseParenExpression = function $parseParenExpression() {
     this.expect(types$1.parenL);
     var val = this.parseExpression();
     this.expect(types$1.parenR);
     return val
   };
 
-  pp$5.shouldParseArrow = function(exprList) {
+  pp$5.shouldParseArrow = function $shouldParseArrow(exprList) {
     return !this.canInsertSemicolon()
   };
 
-  pp$5.parseParenAndDistinguishExpression = function(canBeArrow, forInit) {
+  pp$5.parseParenAndDistinguishExpression = function $parseParenAndDistinguishExpression(canBeArrow, forInit) {
     var startPos = this.start, startLoc = this.startLoc, val, allowTrailingComma = this.options.ecmaVersion >= 8;
     if (this.options.ecmaVersion >= 6) {
       this.next();
@@ -10794,11 +10792,11 @@ if (true) {
     }
   };
 
-  pp$5.parseParenItem = function(item) {
+  pp$5.parseParenItem = function $parseParenItem(item) {
     return item
   };
 
-  pp$5.parseParenArrowList = function(startPos, startLoc, exprList, forInit) {
+  pp$5.parseParenArrowList = function $parseParenArrowList(startPos, startLoc, exprList, forInit) {
     return this.parseArrowExpression(this.startNodeAt(startPos, startLoc), exprList, false, forInit)
   };
 
@@ -10810,7 +10808,7 @@ if (true) {
 
   var empty = [];
 
-  pp$5.parseNew = function() {
+  pp$5.parseNew = function $parseNew() {
     if (this.containsEsc) { this.raiseRecoverable(this.start, "Escape sequence in keyword new"); }
     var node = this.startNode();
     this.next();
@@ -10838,7 +10836,7 @@ if (true) {
 
   // Parse template expression.
 
-  pp$5.parseTemplateElement = function(ref) {
+  pp$5.parseTemplateElement = function $parseTemplateElement(ref) {
     var isTagged = ref.isTagged;
 
     var elem = this.startNode();
@@ -10861,7 +10859,7 @@ if (true) {
     return this.finishNode(elem, "TemplateElement")
   };
 
-  pp$5.parseTemplate = function(ref) {
+  pp$5.parseTemplate = function $parseTemplate(ref) {
     if ( ref === void 0 ) ref = {};
     var isTagged = ref.isTagged; if ( isTagged === void 0 ) isTagged = false;
 
@@ -10881,7 +10879,7 @@ if (true) {
     return this.finishNode(node, "TemplateLiteral")
   };
 
-  pp$5.isAsyncProp = function(prop) {
+  pp$5.isAsyncProp = function $isAsyncProp(prop) {
     return !prop.computed && prop.key.type === "Identifier" && prop.key.name === "async" &&
       (this.type === types$1.name || this.type === types$1.num || this.type === types$1.string || this.type === types$1.bracketL || this.type.keyword || (this.options.ecmaVersion >= 9 && this.type === types$1.star)) &&
       !lineBreak.test(this.input.slice(this.lastTokEnd, this.start))
@@ -10889,7 +10887,7 @@ if (true) {
 
   // Parse an object literal or binding pattern.
 
-  pp$5.parseObj = function(isPattern, refDestructuringErrors) {
+  pp$5.parseObj = function $parseObj(isPattern, refDestructuringErrors) {
     var node = this.startNode(), first = true, propHash = {};
     node.properties = [];
     this.next();
@@ -10906,7 +10904,7 @@ if (true) {
     return this.finishNode(node, isPattern ? "ObjectPattern" : "ObjectExpression")
   };
 
-  pp$5.parseProperty = function(isPattern, refDestructuringErrors) {
+  pp$5.parseProperty = function $parseProperty(isPattern, refDestructuringErrors) {
     var prop = this.startNode(), isGenerator, isAsync, startPos, startLoc;
     if (this.options.ecmaVersion >= 9 && this.eat(types$1.ellipsis)) {
       if (isPattern) {
@@ -10948,7 +10946,7 @@ if (true) {
     return this.finishNode(prop, "Property")
   };
 
-  pp$5.parseGetterSetter = function(prop) {
+  pp$5.parseGetterSetter = function $parseGetterSetter(prop) {
     var kind = prop.key.name;
     this.parsePropertyName(prop);
     prop.value = this.parseMethod(false);
@@ -10966,7 +10964,7 @@ if (true) {
     }
   };
 
-  pp$5.parsePropertyValue = function(prop, isPattern, isGenerator, isAsync, startPos, startLoc, refDestructuringErrors, containsEsc) {
+  pp$5.parsePropertyValue = function $parsePropertyValue(prop, isPattern, isGenerator, isAsync, startPos, startLoc, refDestructuringErrors, containsEsc) {
     if ((isGenerator || isAsync) && this.type === types$1.colon)
       { this.unexpected(); }
 
@@ -11003,7 +11001,7 @@ if (true) {
     } else { this.unexpected(); }
   };
 
-  pp$5.parsePropertyName = function(prop) {
+  pp$5.parsePropertyName = function $parsePropertyName(prop) {
     if (this.options.ecmaVersion >= 6) {
       if (this.eat(types$1.bracketL)) {
         prop.computed = true;
@@ -11019,7 +11017,7 @@ if (true) {
 
   // Initialize empty function node.
 
-  pp$5.initFunction = function(node) {
+  pp$5.initFunction = function $initFunction(node) {
     node.id = null;
     if (this.options.ecmaVersion >= 6) { node.generator = node.expression = false; }
     if (this.options.ecmaVersion >= 8) { node.async = false; }
@@ -11027,7 +11025,7 @@ if (true) {
 
   // Parse object or class method.
 
-  pp$5.parseMethod = function(isGenerator, isAsync, allowDirectSuper) {
+  pp$5.parseMethod = function $parseMethod(isGenerator, isAsync, allowDirectSuper) {
     var node = this.startNode(), oldYieldPos = this.yieldPos, oldAwaitPos = this.awaitPos, oldAwaitIdentPos = this.awaitIdentPos;
 
     this.initFunction(node);
@@ -11054,7 +11052,7 @@ if (true) {
 
   // Parse arrow function expression with given parameters.
 
-  pp$5.parseArrowExpression = function(node, params, isAsync, forInit) {
+  pp$5.parseArrowExpression = function $parseArrowExpression(node, params, isAsync, forInit) {
     var oldYieldPos = this.yieldPos, oldAwaitPos = this.awaitPos, oldAwaitIdentPos = this.awaitIdentPos;
 
     this.enterScope(functionFlags(isAsync, false) | SCOPE_ARROW);
@@ -11076,7 +11074,7 @@ if (true) {
 
   // Parse function body and check parameters.
 
-  pp$5.parseFunctionBody = function(node, isArrowFunction, isMethod, forInit) {
+  pp$5.parseFunctionBody = function $parseFunctionBody(node, isArrowFunction, isMethod, forInit) {
     var isExpression = isArrowFunction && this.type !== types$1.braceL;
     var oldStrict = this.strict, useStrict = false;
 
@@ -11113,7 +11111,7 @@ if (true) {
     this.exitScope();
   };
 
-  pp$5.isSimpleParamList = function(params) {
+  pp$5.isSimpleParamList = function $isSimpleParamList(params) {
     for (var i = 0, list = params; i < list.length; i += 1)
       {
       var param = list[i];
@@ -11126,7 +11124,7 @@ if (true) {
   // Checks function params for various disallowed patterns such as using "eval"
   // or "arguments" and duplicate parameters.
 
-  pp$5.checkParams = function(node, allowDuplicates) {
+  pp$5.checkParams = function $checkParams(node, allowDuplicates) {
     var nameHash = Object.create(null);
     for (var i = 0, list = node.params; i < list.length; i += 1)
       {
@@ -11142,7 +11140,7 @@ if (true) {
   // nothing in between them to be parsed as `null` (which is needed
   // for array literals).
 
-  pp$5.parseExprList = function(close, allowTrailingComma, allowEmpty, refDestructuringErrors) {
+  pp$5.parseExprList = function $parseExprList(close, allowTrailingComma, allowEmpty, refDestructuringErrors) {
     var elts = [], first = true;
     while (!this.eat(close)) {
       if (!first) {
@@ -11165,7 +11163,7 @@ if (true) {
     return elts
   };
 
-  pp$5.checkUnreserved = function(ref) {
+  pp$5.checkUnreserved = function $checkUnreserved(ref) {
     var start = ref.start;
     var end = ref.end;
     var name = ref.name;
@@ -11194,7 +11192,7 @@ if (true) {
   // when parsing properties), it will also convert keywords into
   // identifiers.
 
-  pp$5.parseIdent = function(liberal) {
+  pp$5.parseIdent = function $parseIdent(liberal) {
     var node = this.parseIdentNode();
     this.next(!!liberal);
     this.finishNode(node, "Identifier");
@@ -11206,7 +11204,7 @@ if (true) {
     return node
   };
 
-  pp$5.parseIdentNode = function() {
+  pp$5.parseIdentNode = function $parseIdentNode() {
     var node = this.startNode();
     if (this.type === types$1.name) {
       node.name = this.value;
@@ -11228,7 +11226,7 @@ if (true) {
     return node
   };
 
-  pp$5.parsePrivateIdent = function() {
+  pp$5.parsePrivateIdent = function $parsePrivateIdent() {
     var node = this.startNode();
     if (this.type === types$1.privateId) {
       node.name = this.value;
@@ -11252,7 +11250,7 @@ if (true) {
 
   // Parses yield expression inside generator.
 
-  pp$5.parseYield = function(forInit) {
+  pp$5.parseYield = function $parseYield(forInit) {
     if (!this.yieldPos) { this.yieldPos = this.start; }
 
     var node = this.startNode();
@@ -11267,7 +11265,7 @@ if (true) {
     return this.finishNode(node, "YieldExpression")
   };
 
-  pp$5.parseAwait = function(forInit) {
+  pp$5.parseAwait = function $parseAwait(forInit) {
     if (!this.awaitPos) { this.awaitPos = this.start; }
 
     var node = this.startNode();
@@ -11284,7 +11282,7 @@ if (true) {
   // of the error message, and then raises a `SyntaxError` with that
   // message.
 
-  pp$4.raise = function(pos, message) {
+  pp$4.raise = function $raise(pos, message) {
     var loc = getLineInfo(this.input, pos);
     message += " (" + loc.line + ":" + loc.column + ")";
     if (this.sourceFile) {
@@ -11297,7 +11295,7 @@ if (true) {
 
   pp$4.raiseRecoverable = pp$4.raise;
 
-  pp$4.curPosition = function() {
+  pp$4.curPosition = function $curPosition() {
     if (this.options.locations) {
       return new Position(this.curLine, this.pos - this.lineStart)
     }
@@ -11317,22 +11315,22 @@ if (true) {
 
   // The functions in this module keep track of declared variables in the current scope in order to detect duplicate variable names.
 
-  pp$3.enterScope = function(flags) {
+  pp$3.enterScope = function $enterScope(flags) {
     this.scopeStack.push(new Scope(flags));
   };
 
-  pp$3.exitScope = function() {
+  pp$3.exitScope = function $exitScope() {
     this.scopeStack.pop();
   };
 
   // The spec says:
   // > At the top level of a function, or script, function declarations are
   // > treated like var declarations rather than like lexical declarations.
-  pp$3.treatFunctionsAsVarInScope = function(scope) {
+  pp$3.treatFunctionsAsVarInScope = function $treatFunctionsAsVarInScope(scope) {
     return (scope.flags & SCOPE_FUNCTION) || !this.inModule && (scope.flags & SCOPE_TOP)
   };
 
-  pp$3.declareName = function(name, bindingType, pos) {
+  pp$3.declareName = function $declareName(name, bindingType, pos) {
     var redeclared = false;
     if (bindingType === BIND_LEXICAL) {
       var scope = this.currentScope();
@@ -11367,7 +11365,7 @@ if (true) {
     if (redeclared) { this.raiseRecoverable(pos, ("Identifier '" + name + "' has already been declared")); }
   };
 
-  pp$3.checkLocalExport = function(id) {
+  pp$3.checkLocalExport = function $checkLocalExport(id) {
     // scope.functions must be empty as Module code is always strict.
     if (this.scopeStack[0].lexical.indexOf(id.name) === -1 &&
         this.scopeStack[0].var.indexOf(id.name) === -1) {
@@ -11375,11 +11373,11 @@ if (true) {
     }
   };
 
-  pp$3.currentScope = function() {
+  pp$3.currentScope = function $currentScope() {
     return this.scopeStack[this.scopeStack.length - 1]
   };
 
-  pp$3.currentVarScope = function() {
+  pp$3.currentVarScope = function $currentVarScope() {
     for (var i = this.scopeStack.length - 1;; i--) {
       var scope = this.scopeStack[i];
       if (scope.flags & (SCOPE_VAR | SCOPE_CLASS_FIELD_INIT | SCOPE_CLASS_STATIC_BLOCK)) { return scope }
@@ -11387,7 +11385,7 @@ if (true) {
   };
 
   // Could be useful for `this`, `new.target`, `super()`, `super.property`, and `super[property]`.
-  pp$3.currentThisScope = function() {
+  pp$3.currentThisScope = function $currentThisScope() {
     for (var i = this.scopeStack.length - 1;; i--) {
       var scope = this.scopeStack[i];
       if (scope.flags & (SCOPE_VAR | SCOPE_CLASS_FIELD_INIT | SCOPE_CLASS_STATIC_BLOCK) &&
@@ -11411,11 +11409,11 @@ if (true) {
 
   var pp$2 = Parser.prototype;
 
-  pp$2.startNode = function() {
+  pp$2.startNode = function $startNode() {
     return new Node(this, this.start, this.startLoc)
   };
 
-  pp$2.startNodeAt = function(pos, loc) {
+  pp$2.startNodeAt = function $startNodeAt(pos, loc) {
     return new Node(this, pos, loc)
   };
 
@@ -11431,17 +11429,17 @@ if (true) {
     return node
   }
 
-  pp$2.finishNode = function(node, type) {
+  pp$2.finishNode = function $finishNode(node, type) {
     return finishNodeAt.call(this, node, type, this.lastTokEnd, this.lastTokEndLoc)
   };
 
   // Finish node at given position
 
-  pp$2.finishNodeAt = function(node, type, pos, loc) {
+  pp$2.finishNodeAt = function $finishNodeAt(node, type, pos, loc) {
     return finishNodeAt.call(this, node, type, pos, loc)
   };
 
-  pp$2.copyNode = function(node) {
+  pp$2.copyNode = function $copyNode(node) {
     var newNode = new Node(this, node.start, this.startLoc);
     for (var prop in node) { newNode[prop] = node[prop]; }
     return newNode
@@ -11679,7 +11677,7 @@ if (true) {
    * @param {RegExpValidationState} state The state to validate RegExp.
    * @returns {void}
    */
-  pp$1.validateRegExpFlags = function(state) {
+  pp$1.validateRegExpFlags = function $validateRegExpFlags(state) {
     var validFlags = state.validFlags;
     var flags = state.flags;
 
@@ -11713,7 +11711,7 @@ if (true) {
    * @param {RegExpValidationState} state The state to validate RegExp.
    * @returns {void}
    */
-  pp$1.validateRegExpPattern = function(state) {
+  pp$1.validateRegExpPattern = function $validateRegExpPattern(state) {
     this.regexp_pattern(state);
 
     // The goal symbol for the parse is |Pattern[~U, ~N]|. If the result of
@@ -11728,7 +11726,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Pattern
-  pp$1.regexp_pattern = function(state) {
+  pp$1.regexp_pattern = function $regexp_pattern(state) {
     state.pos = 0;
     state.lastIntValue = 0;
     state.lastStringValue = "";
@@ -11763,7 +11761,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Disjunction
-  pp$1.regexp_disjunction = function(state) {
+  pp$1.regexp_disjunction = function $regexp_disjunction(state) {
     var trackDisjunction = this.options.ecmaVersion >= 16;
     if (trackDisjunction) { state.branchID = new BranchID(state.branchID, null); }
     this.regexp_alternative(state);
@@ -11783,12 +11781,12 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Alternative
-  pp$1.regexp_alternative = function(state) {
+  pp$1.regexp_alternative = function $regexp_alternative(state) {
     while (state.pos < state.source.length && this.regexp_eatTerm(state)) {}
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-Term
-  pp$1.regexp_eatTerm = function(state) {
+  pp$1.regexp_eatTerm = function $regexp_eatTerm(state) {
     if (this.regexp_eatAssertion(state)) {
       // Handle `QuantifiableAssertion Quantifier` alternative.
       // `state.lastAssertionIsQuantifiable` is true if the last eaten Assertion
@@ -11811,7 +11809,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-Assertion
-  pp$1.regexp_eatAssertion = function(state) {
+  pp$1.regexp_eatAssertion = function $regexp_eatAssertion(state) {
     var start = state.pos;
     state.lastAssertionIsQuantifiable = false;
 
@@ -11849,7 +11847,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Quantifier
-  pp$1.regexp_eatQuantifier = function(state, noError) {
+  pp$1.regexp_eatQuantifier = function $regexp_eatQuantifier(state, noError) {
     if ( noError === void 0 ) noError = false;
 
     if (this.regexp_eatQuantifierPrefix(state, noError)) {
@@ -11860,7 +11858,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-QuantifierPrefix
-  pp$1.regexp_eatQuantifierPrefix = function(state, noError) {
+  pp$1.regexp_eatQuantifierPrefix = function $regexp_eatQuantifierPrefix(state, noError) {
     return (
       state.eat(0x2A /* * */) ||
       state.eat(0x2B /* + */) ||
@@ -11868,7 +11866,7 @@ if (true) {
       this.regexp_eatBracedQuantifier(state, noError)
     )
   };
-  pp$1.regexp_eatBracedQuantifier = function(state, noError) {
+  pp$1.regexp_eatBracedQuantifier = function $regexp_eatBracedQuantifier(state, noError) {
     var start = state.pos;
     if (state.eat(0x7B /* { */)) {
       var min = 0, max = -1;
@@ -11894,7 +11892,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Atom
-  pp$1.regexp_eatAtom = function(state) {
+  pp$1.regexp_eatAtom = function $regexp_eatAtom(state) {
     return (
       this.regexp_eatPatternCharacters(state) ||
       state.eat(0x2E /* . */) ||
@@ -11904,7 +11902,7 @@ if (true) {
       this.regexp_eatCapturingGroup(state)
     )
   };
-  pp$1.regexp_eatReverseSolidusAtomEscape = function(state) {
+  pp$1.regexp_eatReverseSolidusAtomEscape = function $regexp_eatReverseSolidusAtomEscape(state) {
     var start = state.pos;
     if (state.eat(0x5C /* \ */)) {
       if (this.regexp_eatAtomEscape(state)) {
@@ -11914,7 +11912,7 @@ if (true) {
     }
     return false
   };
-  pp$1.regexp_eatUncapturingGroup = function(state) {
+  pp$1.regexp_eatUncapturingGroup = function $regexp_eatUncapturingGroup(state) {
     var start = state.pos;
     if (state.eat(0x28 /* ( */)) {
       if (state.eat(0x3F /* ? */)) {
@@ -11957,7 +11955,7 @@ if (true) {
     }
     return false
   };
-  pp$1.regexp_eatCapturingGroup = function(state) {
+  pp$1.regexp_eatCapturingGroup = function $regexp_eatCapturingGroup(state) {
     if (state.eat(0x28 /* ( */)) {
       if (this.options.ecmaVersion >= 9) {
         this.regexp_groupSpecifier(state);
@@ -11976,7 +11974,7 @@ if (true) {
   // RegularExpressionModifiers ::
   //   [empty]
   //   RegularExpressionModifiers RegularExpressionModifier
-  pp$1.regexp_eatModifiers = function(state) {
+  pp$1.regexp_eatModifiers = function $regexp_eatModifiers(state) {
     var modifiers = "";
     var ch = 0;
     while ((ch = state.current()) !== -1 && isRegularExpressionModifier(ch)) {
@@ -11992,7 +11990,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-ExtendedAtom
-  pp$1.regexp_eatExtendedAtom = function(state) {
+  pp$1.regexp_eatExtendedAtom = function $regexp_eatExtendedAtom(state) {
     return (
       state.eat(0x2E /* . */) ||
       this.regexp_eatReverseSolidusAtomEscape(state) ||
@@ -12005,7 +12003,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-InvalidBracedQuantifier
-  pp$1.regexp_eatInvalidBracedQuantifier = function(state) {
+  pp$1.regexp_eatInvalidBracedQuantifier = function $regexp_eatInvalidBracedQuantifier(state) {
     if (this.regexp_eatBracedQuantifier(state, true)) {
       state.raise("Nothing to repeat");
     }
@@ -12013,7 +12011,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-SyntaxCharacter
-  pp$1.regexp_eatSyntaxCharacter = function(state) {
+  pp$1.regexp_eatSyntaxCharacter = function $regexp_eatSyntaxCharacter(state) {
     var ch = state.current();
     if (isSyntaxCharacter(ch)) {
       state.lastIntValue = ch;
@@ -12035,7 +12033,7 @@ if (true) {
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-PatternCharacter
   // But eat eager.
-  pp$1.regexp_eatPatternCharacters = function(state) {
+  pp$1.regexp_eatPatternCharacters = function $regexp_eatPatternCharacters(state) {
     var start = state.pos;
     var ch = 0;
     while ((ch = state.current()) !== -1 && !isSyntaxCharacter(ch)) {
@@ -12045,7 +12043,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-ExtendedPatternCharacter
-  pp$1.regexp_eatExtendedPatternCharacter = function(state) {
+  pp$1.regexp_eatExtendedPatternCharacter = function $regexp_eatExtendedPatternCharacter(state) {
     var ch = state.current();
     if (
       ch !== -1 &&
@@ -12066,7 +12064,7 @@ if (true) {
   // GroupSpecifier ::
   //   [empty]
   //   `?` GroupName
-  pp$1.regexp_groupSpecifier = function(state) {
+  pp$1.regexp_groupSpecifier = function $regexp_groupSpecifier(state) {
     if (state.eat(0x3F /* ? */)) {
       if (!this.regexp_eatGroupName(state)) { state.raise("Invalid group"); }
       var trackDisjunction = this.options.ecmaVersion >= 16;
@@ -12094,7 +12092,7 @@ if (true) {
   // GroupName ::
   //   `<` RegExpIdentifierName `>`
   // Note: this updates `state.lastStringValue` property with the eaten name.
-  pp$1.regexp_eatGroupName = function(state) {
+  pp$1.regexp_eatGroupName = function $regexp_eatGroupName(state) {
     state.lastStringValue = "";
     if (state.eat(0x3C /* < */)) {
       if (this.regexp_eatRegExpIdentifierName(state) && state.eat(0x3E /* > */)) {
@@ -12109,7 +12107,7 @@ if (true) {
   //   RegExpIdentifierStart
   //   RegExpIdentifierName RegExpIdentifierPart
   // Note: this updates `state.lastStringValue` property with the eaten name.
-  pp$1.regexp_eatRegExpIdentifierName = function(state) {
+  pp$1.regexp_eatRegExpIdentifierName = function $regexp_eatRegExpIdentifierName(state) {
     state.lastStringValue = "";
     if (this.regexp_eatRegExpIdentifierStart(state)) {
       state.lastStringValue += codePointToString(state.lastIntValue);
@@ -12126,7 +12124,7 @@ if (true) {
   //   `$`
   //   `_`
   //   `\` RegExpUnicodeEscapeSequence[+U]
-  pp$1.regexp_eatRegExpIdentifierStart = function(state) {
+  pp$1.regexp_eatRegExpIdentifierStart = function $regexp_eatRegExpIdentifierStart(state) {
     var start = state.pos;
     var forceU = this.options.ecmaVersion >= 11;
     var ch = state.current(forceU);
@@ -12154,7 +12152,7 @@ if (true) {
   //   `\` RegExpUnicodeEscapeSequence[+U]
   //   <ZWNJ>
   //   <ZWJ>
-  pp$1.regexp_eatRegExpIdentifierPart = function(state) {
+  pp$1.regexp_eatRegExpIdentifierPart = function $regexp_eatRegExpIdentifierPart(state) {
     var start = state.pos;
     var forceU = this.options.ecmaVersion >= 11;
     var ch = state.current(forceU);
@@ -12176,7 +12174,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-AtomEscape
-  pp$1.regexp_eatAtomEscape = function(state) {
+  pp$1.regexp_eatAtomEscape = function $regexp_eatAtomEscape(state) {
     if (
       this.regexp_eatBackReference(state) ||
       this.regexp_eatCharacterClassEscape(state) ||
@@ -12194,7 +12192,7 @@ if (true) {
     }
     return false
   };
-  pp$1.regexp_eatBackReference = function(state) {
+  pp$1.regexp_eatBackReference = function $regexp_eatBackReference(state) {
     var start = state.pos;
     if (this.regexp_eatDecimalEscape(state)) {
       var n = state.lastIntValue;
@@ -12212,7 +12210,7 @@ if (true) {
     }
     return false
   };
-  pp$1.regexp_eatKGroupName = function(state) {
+  pp$1.regexp_eatKGroupName = function $regexp_eatKGroupName(state) {
     if (state.eat(0x6B /* k */)) {
       if (this.regexp_eatGroupName(state)) {
         state.backReferenceNames.push(state.lastStringValue);
@@ -12224,7 +12222,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-CharacterEscape
-  pp$1.regexp_eatCharacterEscape = function(state) {
+  pp$1.regexp_eatCharacterEscape = function $regexp_eatCharacterEscape(state) {
     return (
       this.regexp_eatControlEscape(state) ||
       this.regexp_eatCControlLetter(state) ||
@@ -12235,7 +12233,7 @@ if (true) {
       this.regexp_eatIdentityEscape(state)
     )
   };
-  pp$1.regexp_eatCControlLetter = function(state) {
+  pp$1.regexp_eatCControlLetter = function $regexp_eatCControlLetter(state) {
     var start = state.pos;
     if (state.eat(0x63 /* c */)) {
       if (this.regexp_eatControlLetter(state)) {
@@ -12245,7 +12243,7 @@ if (true) {
     }
     return false
   };
-  pp$1.regexp_eatZero = function(state) {
+  pp$1.regexp_eatZero = function $regexp_eatZero(state) {
     if (state.current() === 0x30 /* 0 */ && !isDecimalDigit(state.lookahead())) {
       state.lastIntValue = 0;
       state.advance();
@@ -12255,7 +12253,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-ControlEscape
-  pp$1.regexp_eatControlEscape = function(state) {
+  pp$1.regexp_eatControlEscape = function $regexp_eatControlEscape(state) {
     var ch = state.current();
     if (ch === 0x74 /* t */) {
       state.lastIntValue = 0x09; /* \t */
@@ -12286,7 +12284,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-ControlLetter
-  pp$1.regexp_eatControlLetter = function(state) {
+  pp$1.regexp_eatControlLetter = function $regexp_eatControlLetter(state) {
     var ch = state.current();
     if (isControlLetter(ch)) {
       state.lastIntValue = ch % 0x20;
@@ -12303,7 +12301,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-RegExpUnicodeEscapeSequence
-  pp$1.regexp_eatRegExpUnicodeEscapeSequence = function(state, forceU) {
+  pp$1.regexp_eatRegExpUnicodeEscapeSequence = function $regexp_eatRegExpUnicodeEscapeSequence(state, forceU) {
     if ( forceU === void 0 ) forceU = false;
 
     var start = state.pos;
@@ -12348,7 +12346,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-IdentityEscape
-  pp$1.regexp_eatIdentityEscape = function(state) {
+  pp$1.regexp_eatIdentityEscape = function $regexp_eatIdentityEscape(state) {
     if (state.switchU) {
       if (this.regexp_eatSyntaxCharacter(state)) {
         return true
@@ -12371,7 +12369,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-DecimalEscape
-  pp$1.regexp_eatDecimalEscape = function(state) {
+  pp$1.regexp_eatDecimalEscape = function $regexp_eatDecimalEscape(state) {
     state.lastIntValue = 0;
     var ch = state.current();
     if (ch >= 0x31 /* 1 */ && ch <= 0x39 /* 9 */) {
@@ -12391,7 +12389,7 @@ if (true) {
   var CharSetString = 2; // Construct parsed, can contain strings
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-CharacterClassEscape
-  pp$1.regexp_eatCharacterClassEscape = function(state) {
+  pp$1.regexp_eatCharacterClassEscape = function $regexp_eatCharacterClassEscape(state) {
     var ch = state.current();
 
     if (isCharacterClassEscape(ch)) {
@@ -12437,7 +12435,7 @@ if (true) {
   // UnicodePropertyValueExpression ::
   //   UnicodePropertyName `=` UnicodePropertyValue
   //   LoneUnicodePropertyNameOrValue
-  pp$1.regexp_eatUnicodePropertyValueExpression = function(state) {
+  pp$1.regexp_eatUnicodePropertyValueExpression = function $regexp_eatUnicodePropertyValueExpression(state) {
     var start = state.pos;
 
     // UnicodePropertyName `=` UnicodePropertyValue
@@ -12459,14 +12457,14 @@ if (true) {
     return CharSetNone
   };
 
-  pp$1.regexp_validateUnicodePropertyNameAndValue = function(state, name, value) {
+  pp$1.regexp_validateUnicodePropertyNameAndValue = function $regexp_validateUnicodePropertyNameAndValue(state, name, value) {
     if (!hasOwn(state.unicodeProperties.nonBinary, name))
       { state.raise("Invalid property name"); }
     if (!state.unicodeProperties.nonBinary[name].test(value))
       { state.raise("Invalid property value"); }
   };
 
-  pp$1.regexp_validateUnicodePropertyNameOrValue = function(state, nameOrValue) {
+  pp$1.regexp_validateUnicodePropertyNameOrValue = function $regexp_validateUnicodePropertyNameOrValue(state, nameOrValue) {
     if (state.unicodeProperties.binary.test(nameOrValue)) { return CharSetOk }
     if (state.switchV && state.unicodeProperties.binaryOfStrings.test(nameOrValue)) { return CharSetString }
     state.raise("Invalid property name");
@@ -12474,7 +12472,7 @@ if (true) {
 
   // UnicodePropertyName ::
   //   UnicodePropertyNameCharacters
-  pp$1.regexp_eatUnicodePropertyName = function(state) {
+  pp$1.regexp_eatUnicodePropertyName = function $regexp_eatUnicodePropertyName(state) {
     var ch = 0;
     state.lastStringValue = "";
     while (isUnicodePropertyNameCharacter(ch = state.current())) {
@@ -12490,7 +12488,7 @@ if (true) {
 
   // UnicodePropertyValue ::
   //   UnicodePropertyValueCharacters
-  pp$1.regexp_eatUnicodePropertyValue = function(state) {
+  pp$1.regexp_eatUnicodePropertyValue = function $regexp_eatUnicodePropertyValue(state) {
     var ch = 0;
     state.lastStringValue = "";
     while (isUnicodePropertyValueCharacter(ch = state.current())) {
@@ -12505,12 +12503,12 @@ if (true) {
 
   // LoneUnicodePropertyNameOrValue ::
   //   UnicodePropertyValueCharacters
-  pp$1.regexp_eatLoneUnicodePropertyNameOrValue = function(state) {
+  pp$1.regexp_eatLoneUnicodePropertyNameOrValue = function $regexp_eatLoneUnicodePropertyNameOrValue(state) {
     return this.regexp_eatUnicodePropertyValue(state)
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-CharacterClass
-  pp$1.regexp_eatCharacterClass = function(state) {
+  pp$1.regexp_eatCharacterClass = function $regexp_eatCharacterClass(state) {
     if (state.eat(0x5B /* [ */)) {
       var negate = state.eat(0x5E /* ^ */);
       var result = this.regexp_classContents(state);
@@ -12525,7 +12523,7 @@ if (true) {
 
   // https://tc39.es/ecma262/#prod-ClassContents
   // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassRanges
-  pp$1.regexp_classContents = function(state) {
+  pp$1.regexp_classContents = function $regexp_classContents(state) {
     if (state.current() === 0x5D /* ] */) { return CharSetOk }
     if (state.switchV) { return this.regexp_classSetExpression(state) }
     this.regexp_nonEmptyClassRanges(state);
@@ -12534,7 +12532,7 @@ if (true) {
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-NonemptyClassRanges
   // https://www.ecma-international.org/ecma-262/8.0/#prod-NonemptyClassRangesNoDash
-  pp$1.regexp_nonEmptyClassRanges = function(state) {
+  pp$1.regexp_nonEmptyClassRanges = function $regexp_nonEmptyClassRanges(state) {
     while (this.regexp_eatClassAtom(state)) {
       var left = state.lastIntValue;
       if (state.eat(0x2D /* - */) && this.regexp_eatClassAtom(state)) {
@@ -12551,7 +12549,7 @@ if (true) {
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassAtom
   // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassAtomNoDash
-  pp$1.regexp_eatClassAtom = function(state) {
+  pp$1.regexp_eatClassAtom = function $regexp_eatClassAtom(state) {
     var start = state.pos;
 
     if (state.eat(0x5C /* \ */)) {
@@ -12580,7 +12578,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-ClassEscape
-  pp$1.regexp_eatClassEscape = function(state) {
+  pp$1.regexp_eatClassEscape = function $regexp_eatClassEscape(state) {
     var start = state.pos;
 
     if (state.eat(0x62 /* b */)) {
@@ -12610,7 +12608,7 @@ if (true) {
   // https://tc39.es/ecma262/#prod-ClassUnion
   // https://tc39.es/ecma262/#prod-ClassIntersection
   // https://tc39.es/ecma262/#prod-ClassSubtraction
-  pp$1.regexp_classSetExpression = function(state) {
+  pp$1.regexp_classSetExpression = function $regexp_classSetExpression(state) {
     var result = CharSetOk, subResult;
     if (this.regexp_eatClassSetRange(state)) ; else if (subResult = this.regexp_eatClassSetOperand(state)) {
       if (subResult === CharSetString) { result = CharSetString; }
@@ -12646,7 +12644,7 @@ if (true) {
   };
 
   // https://tc39.es/ecma262/#prod-ClassSetRange
-  pp$1.regexp_eatClassSetRange = function(state) {
+  pp$1.regexp_eatClassSetRange = function $regexp_eatClassSetRange(state) {
     var start = state.pos;
     if (this.regexp_eatClassSetCharacter(state)) {
       var left = state.lastIntValue;
@@ -12663,13 +12661,13 @@ if (true) {
   };
 
   // https://tc39.es/ecma262/#prod-ClassSetOperand
-  pp$1.regexp_eatClassSetOperand = function(state) {
+  pp$1.regexp_eatClassSetOperand = function $regexp_eatClassSetOperand(state) {
     if (this.regexp_eatClassSetCharacter(state)) { return CharSetOk }
     return this.regexp_eatClassStringDisjunction(state) || this.regexp_eatNestedClass(state)
   };
 
   // https://tc39.es/ecma262/#prod-NestedClass
-  pp$1.regexp_eatNestedClass = function(state) {
+  pp$1.regexp_eatNestedClass = function $regexp_eatNestedClass(state) {
     var start = state.pos;
     if (state.eat(0x5B /* [ */)) {
       var negate = state.eat(0x5E /* ^ */);
@@ -12693,7 +12691,7 @@ if (true) {
   };
 
   // https://tc39.es/ecma262/#prod-ClassStringDisjunction
-  pp$1.regexp_eatClassStringDisjunction = function(state) {
+  pp$1.regexp_eatClassStringDisjunction = function $regexp_eatClassStringDisjunction(state) {
     var start = state.pos;
     if (state.eatChars([0x5C, 0x71] /* \q */)) {
       if (state.eat(0x7B /* { */)) {
@@ -12711,7 +12709,7 @@ if (true) {
   };
 
   // https://tc39.es/ecma262/#prod-ClassStringDisjunctionContents
-  pp$1.regexp_classStringDisjunctionContents = function(state) {
+  pp$1.regexp_classStringDisjunctionContents = function $regexp_classStringDisjunctionContents(state) {
     var result = this.regexp_classString(state);
     while (state.eat(0x7C /* | */)) {
       if (this.regexp_classString(state) === CharSetString) { result = CharSetString; }
@@ -12721,14 +12719,14 @@ if (true) {
 
   // https://tc39.es/ecma262/#prod-ClassString
   // https://tc39.es/ecma262/#prod-NonEmptyClassString
-  pp$1.regexp_classString = function(state) {
+  pp$1.regexp_classString = function $regexp_classString(state) {
     var count = 0;
     while (this.regexp_eatClassSetCharacter(state)) { count++; }
     return count === 1 ? CharSetOk : CharSetString
   };
 
   // https://tc39.es/ecma262/#prod-ClassSetCharacter
-  pp$1.regexp_eatClassSetCharacter = function(state) {
+  pp$1.regexp_eatClassSetCharacter = function $regexp_eatClassSetCharacter(state) {
     var start = state.pos;
     if (state.eat(0x5C /* \ */)) {
       if (
@@ -12779,7 +12777,7 @@ if (true) {
   }
 
   // https://tc39.es/ecma262/#prod-ClassSetReservedPunctuator
-  pp$1.regexp_eatClassSetReservedPunctuator = function(state) {
+  pp$1.regexp_eatClassSetReservedPunctuator = function $regexp_eatClassSetReservedPunctuator(state) {
     var ch = state.current();
     if (isClassSetReservedPunctuator(ch)) {
       state.lastIntValue = ch;
@@ -12806,7 +12804,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-ClassControlLetter
-  pp$1.regexp_eatClassControlLetter = function(state) {
+  pp$1.regexp_eatClassControlLetter = function $regexp_eatClassControlLetter(state) {
     var ch = state.current();
     if (isDecimalDigit(ch) || ch === 0x5F /* _ */) {
       state.lastIntValue = ch % 0x20;
@@ -12817,7 +12815,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-HexEscapeSequence
-  pp$1.regexp_eatHexEscapeSequence = function(state) {
+  pp$1.regexp_eatHexEscapeSequence = function $regexp_eatHexEscapeSequence(state) {
     var start = state.pos;
     if (state.eat(0x78 /* x */)) {
       if (this.regexp_eatFixedHexDigits(state, 2)) {
@@ -12832,7 +12830,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-DecimalDigits
-  pp$1.regexp_eatDecimalDigits = function(state) {
+  pp$1.regexp_eatDecimalDigits = function $regexp_eatDecimalDigits(state) {
     var start = state.pos;
     var ch = 0;
     state.lastIntValue = 0;
@@ -12847,7 +12845,7 @@ if (true) {
   }
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-HexDigits
-  pp$1.regexp_eatHexDigits = function(state) {
+  pp$1.regexp_eatHexDigits = function $regexp_eatHexDigits(state) {
     var start = state.pos;
     var ch = 0;
     state.lastIntValue = 0;
@@ -12876,7 +12874,7 @@ if (true) {
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-LegacyOctalEscapeSequence
   // Allows only 0-377(octal) i.e. 0-255(decimal).
-  pp$1.regexp_eatLegacyOctalEscapeSequence = function(state) {
+  pp$1.regexp_eatLegacyOctalEscapeSequence = function $regexp_eatLegacyOctalEscapeSequence(state) {
     if (this.regexp_eatOctalDigit(state)) {
       var n1 = state.lastIntValue;
       if (this.regexp_eatOctalDigit(state)) {
@@ -12895,7 +12893,7 @@ if (true) {
   };
 
   // https://www.ecma-international.org/ecma-262/8.0/#prod-OctalDigit
-  pp$1.regexp_eatOctalDigit = function(state) {
+  pp$1.regexp_eatOctalDigit = function $regexp_eatOctalDigit(state) {
     var ch = state.current();
     if (isOctalDigit(ch)) {
       state.lastIntValue = ch - 0x30; /* 0 */
@@ -12912,7 +12910,7 @@ if (true) {
   // https://www.ecma-international.org/ecma-262/8.0/#prod-Hex4Digits
   // https://www.ecma-international.org/ecma-262/8.0/#prod-HexDigit
   // And HexDigit HexDigit in https://www.ecma-international.org/ecma-262/8.0/#prod-HexEscapeSequence
-  pp$1.regexp_eatFixedHexDigits = function(state, length) {
+  pp$1.regexp_eatFixedHexDigits = function $regexp_eatFixedHexDigits(state, length) {
     var start = state.pos;
     state.lastIntValue = 0;
     for (var i = 0; i < length; ++i) {
@@ -12948,7 +12946,7 @@ if (true) {
 
   // Move to the next token
 
-  pp.next = function(ignoreEscapeSequenceInKeyword) {
+  pp.next = function $next(ignoreEscapeSequenceInKeyword) {
     if (!ignoreEscapeSequenceInKeyword && this.type.keyword && this.containsEsc)
       { this.raiseRecoverable(this.start, "Escape sequence in keyword " + this.type.keyword); }
     if (this.options.onToken)
@@ -12961,7 +12959,7 @@ if (true) {
     this.nextToken();
   };
 
-  pp.getToken = function() {
+  pp.getToken = function $getToken() {
     this.next();
     return new Token(this)
   };
@@ -12972,7 +12970,7 @@ if (true) {
       var this$1$1 = this;
 
       return {
-        next: function () {
+        next : function $next() {
           var token = this$1$1.getToken();
           return {
             done: token.type === types$1.eof,
@@ -12988,7 +12986,7 @@ if (true) {
   // Read a single token, updating the parser object's token-related
   // properties.
 
-  pp.nextToken = function() {
+  pp.nextToken = function $nextToken() {
     var curContext = this.curContext();
     if (!curContext || !curContext.preserveSpace) { this.skipSpace(); }
 
@@ -13000,7 +12998,7 @@ if (true) {
     else { this.readToken(this.fullCharCodeAtPos()); }
   };
 
-  pp.readToken = function(code) {
+  pp.readToken = function $readToken(code) {
     // Identifier or keyword. '\uXXXX' sequences are allowed in
     // identifiers, so '\' also dispatches to that.
     if (isIdentifierStart(code, this.options.ecmaVersion >= 6) || code === 92 /* '\' */)
@@ -13009,14 +13007,14 @@ if (true) {
     return this.getTokenFromCode(code)
   };
 
-  pp.fullCharCodeAtPos = function() {
+  pp.fullCharCodeAtPos = function $fullCharCodeAtPos() {
     var code = this.input.charCodeAt(this.pos);
     if (code <= 0xd7ff || code >= 0xdc00) { return code }
     var next = this.input.charCodeAt(this.pos + 1);
     return next <= 0xdbff || next >= 0xe000 ? code : (code << 10) + next - 0x35fdc00
   };
 
-  pp.skipBlockComment = function() {
+  pp.skipBlockComment = function $skipBlockComment() {
     var startLoc = this.options.onComment && this.curPosition();
     var start = this.pos, end = this.input.indexOf("*/", this.pos += 2);
     if (end === -1) { this.raise(this.pos - 2, "Unterminated comment"); }
@@ -13032,7 +13030,7 @@ if (true) {
                              startLoc, this.curPosition()); }
   };
 
-  pp.skipLineComment = function(startSkip) {
+  pp.skipLineComment = function $skipLineComment(startSkip) {
     var start = this.pos;
     var startLoc = this.options.onComment && this.curPosition();
     var ch = this.input.charCodeAt(this.pos += startSkip);
@@ -13047,7 +13045,7 @@ if (true) {
   // Called at the start of the parse and after every token. Skips
   // whitespace and comments, and.
 
-  pp.skipSpace = function() {
+  pp.skipSpace = function $skipSpace() {
     loop: while (this.pos < this.input.length) {
       var ch = this.input.charCodeAt(this.pos);
       switch (ch) {
@@ -13092,7 +13090,7 @@ if (true) {
   // the token, so that the next one's `start` will point at the
   // right position.
 
-  pp.finishToken = function(type, val) {
+  pp.finishToken = function $finishToken(type, val) {
     this.end = this.pos;
     if (this.options.locations) { this.endLoc = this.curPosition(); }
     var prevType = this.type;
@@ -13111,7 +13109,7 @@ if (true) {
   //
   // All in the name of speed.
   //
-  pp.readToken_dot = function() {
+  pp.readToken_dot = function $readToken_dot() {
     var next = this.input.charCodeAt(this.pos + 1);
     if (next >= 48 && next <= 57) { return this.readNumber(true) }
     var next2 = this.input.charCodeAt(this.pos + 2);
@@ -13124,14 +13122,14 @@ if (true) {
     }
   };
 
-  pp.readToken_slash = function() { // '/'
+  pp.readToken_slash = function $readToken_slash() { // '/'
     var next = this.input.charCodeAt(this.pos + 1);
     if (this.exprAllowed) { ++this.pos; return this.readRegexp() }
     if (next === 61) { return this.finishOp(types$1.assign, 2) }
     return this.finishOp(types$1.slash, 1)
   };
 
-  pp.readToken_mult_modulo_exp = function(code) { // '%*'
+  pp.readToken_mult_modulo_exp = function $readToken_mult_modulo_exp(code) { // '%*'
     var next = this.input.charCodeAt(this.pos + 1);
     var size = 1;
     var tokentype = code === 42 ? types$1.star : types$1.modulo;
@@ -13147,7 +13145,7 @@ if (true) {
     return this.finishOp(tokentype, size)
   };
 
-  pp.readToken_pipe_amp = function(code) { // '|&'
+  pp.readToken_pipe_amp = function $readToken_pipe_amp(code) { // '|&'
     var next = this.input.charCodeAt(this.pos + 1);
     if (next === code) {
       if (this.options.ecmaVersion >= 12) {
@@ -13160,13 +13158,13 @@ if (true) {
     return this.finishOp(code === 124 ? types$1.bitwiseOR : types$1.bitwiseAND, 1)
   };
 
-  pp.readToken_caret = function() { // '^'
+  pp.readToken_caret = function $readToken_caret() { // '^'
     var next = this.input.charCodeAt(this.pos + 1);
     if (next === 61) { return this.finishOp(types$1.assign, 2) }
     return this.finishOp(types$1.bitwiseXOR, 1)
   };
 
-  pp.readToken_plus_min = function(code) { // '+-'
+  pp.readToken_plus_min = function $readToken_plus_min(code) { // '+-'
     var next = this.input.charCodeAt(this.pos + 1);
     if (next === code) {
       if (next === 45 && !this.inModule && this.input.charCodeAt(this.pos + 2) === 62 &&
@@ -13182,7 +13180,7 @@ if (true) {
     return this.finishOp(types$1.plusMin, 1)
   };
 
-  pp.readToken_lt_gt = function(code) { // '<>'
+  pp.readToken_lt_gt = function $readToken_lt_gt(code) { // '<>'
     var next = this.input.charCodeAt(this.pos + 1);
     var size = 1;
     if (next === code) {
@@ -13201,7 +13199,7 @@ if (true) {
     return this.finishOp(types$1.relational, size)
   };
 
-  pp.readToken_eq_excl = function(code) { // '=!'
+  pp.readToken_eq_excl = function $readToken_eq_excl(code) { // '=!'
     var next = this.input.charCodeAt(this.pos + 1);
     if (next === 61) { return this.finishOp(types$1.equality, this.input.charCodeAt(this.pos + 2) === 61 ? 3 : 2) }
     if (code === 61 && next === 62 && this.options.ecmaVersion >= 6) { // '=>'
@@ -13211,7 +13209,7 @@ if (true) {
     return this.finishOp(code === 61 ? types$1.eq : types$1.prefix, 1)
   };
 
-  pp.readToken_question = function() { // '?'
+  pp.readToken_question = function $readToken_question() { // '?'
     var ecmaVersion = this.options.ecmaVersion;
     if (ecmaVersion >= 11) {
       var next = this.input.charCodeAt(this.pos + 1);
@@ -13230,7 +13228,7 @@ if (true) {
     return this.finishOp(types$1.question, 1)
   };
 
-  pp.readToken_numberSign = function() { // '#'
+  pp.readToken_numberSign = function $readToken_numberSign() { // '#'
     var ecmaVersion = this.options.ecmaVersion;
     var code = 35; // '#'
     if (ecmaVersion >= 13) {
@@ -13244,7 +13242,7 @@ if (true) {
     this.raise(this.pos, "Unexpected character '" + codePointToString(code) + "'");
   };
 
-  pp.getTokenFromCode = function(code) {
+  pp.getTokenFromCode = function $getTokenFromCode(code) {
     switch (code) {
     // The interpretation of a dot depends on whether it is followed
     // by a digit or another two dots.
@@ -13322,13 +13320,13 @@ if (true) {
     this.raise(this.pos, "Unexpected character '" + codePointToString(code) + "'");
   };
 
-  pp.finishOp = function(type, size) {
+  pp.finishOp = function $finishOp(type, size) {
     var str = this.input.slice(this.pos, this.pos + size);
     this.pos += size;
     return this.finishToken(type, str)
   };
 
-  pp.readRegexp = function() {
+  pp.readRegexp = function $readRegexp() {
     var escaped, inClass, start = this.pos;
     for (;;) {
       if (this.pos >= this.input.length) { this.raise(start, "Unterminated regular expression"); }
@@ -13370,7 +13368,7 @@ if (true) {
   // were read, the integer value otherwise. When `len` is given, this
   // will return `null` unless the integer has exactly `len` digits.
 
-  pp.readInt = function(radix, len, maybeLegacyOctalNumericLiteral) {
+  pp.readInt = function $readInt(radix, len, maybeLegacyOctalNumericLiteral) {
     // `len` is used for character escape sequences. In that case, disallow separators.
     var allowSeparators = this.options.ecmaVersion >= 12 && len === undefined;
 
@@ -13424,7 +13422,7 @@ if (true) {
     return BigInt(str.replace(/_/g, ""))
   }
 
-  pp.readRadixNumber = function(radix) {
+  pp.readRadixNumber = function $readRadixNumber(radix) {
     var start = this.pos;
     this.pos += 2; // 0x
     var val = this.readInt(radix);
@@ -13438,7 +13436,7 @@ if (true) {
 
   // Read an integer, octal integer, or floating-point number.
 
-  pp.readNumber = function(startsWithDot) {
+  pp.readNumber = function $readNumber(startsWithDot) {
     var start = this.pos;
     if (!startsWithDot && this.readInt(10, undefined, true) === null) { this.raise(start, "Invalid number"); }
     var octal = this.pos - start >= 2 && this.input.charCodeAt(start) === 48;
@@ -13469,7 +13467,7 @@ if (true) {
 
   // Read a string value, interpreting backslash-escapes.
 
-  pp.readCodePoint = function() {
+  pp.readCodePoint = function $readCodePoint() {
     var ch = this.input.charCodeAt(this.pos), code;
 
     if (ch === 123) { // '{'
@@ -13484,7 +13482,7 @@ if (true) {
     return code
   };
 
-  pp.readString = function(quote) {
+  pp.readString = function $readString(quote) {
     var out = "", chunkStart = ++this.pos;
     for (;;) {
       if (this.pos >= this.input.length) { this.raise(this.start, "Unterminated string constant"); }
@@ -13514,7 +13512,7 @@ if (true) {
 
   var INVALID_TEMPLATE_ESCAPE_ERROR = {};
 
-  pp.tryReadTemplateToken = function() {
+  pp.tryReadTemplateToken = function $tryReadTemplateToken() {
     this.inTemplateElement = true;
     try {
       this.readTmplToken();
@@ -13529,7 +13527,7 @@ if (true) {
     this.inTemplateElement = false;
   };
 
-  pp.invalidStringToken = function(position, message) {
+  pp.invalidStringToken = function $invalidStringToken(position, message) {
     if (this.inTemplateElement && this.options.ecmaVersion >= 9) {
       throw INVALID_TEMPLATE_ESCAPE_ERROR
     } else {
@@ -13537,7 +13535,7 @@ if (true) {
     }
   };
 
-  pp.readTmplToken = function() {
+  pp.readTmplToken = function $readTmplToken() {
     var out = "", chunkStart = this.pos;
     for (;;) {
       if (this.pos >= this.input.length) { this.raise(this.start, "Unterminated template"); }
@@ -13584,7 +13582,7 @@ if (true) {
   };
 
   // Reads a template token to search for the end, without validating any escape sequences
-  pp.readInvalidTemplateToken = function() {
+  pp.readInvalidTemplateToken = function $readInvalidTemplateToken() {
     for (; this.pos < this.input.length; this.pos++) {
       switch (this.input[this.pos]) {
       case "\\":
@@ -13611,7 +13609,7 @@ if (true) {
 
   // Used to read escaped characters
 
-  pp.readEscapedChar = function(inTemplate) {
+  pp.readEscapedChar = function $readEscapedChar(inTemplate) {
     var ch = this.input.charCodeAt(++this.pos);
     ++this.pos;
     switch (ch) {
@@ -13675,7 +13673,7 @@ if (true) {
 
   // Used to read character escape sequences ('\x', '\u', '\U').
 
-  pp.readHexChar = function(len) {
+  pp.readHexChar = function $readHexChar(len) {
     var codePos = this.pos;
     var n = this.readInt(16, len);
     if (n === null) { this.invalidStringToken(codePos, "Bad character escape sequence"); }
@@ -13688,7 +13686,7 @@ if (true) {
   // Incrementally adds only escaped chars, adding other chunks as-is
   // as a micro-optimization.
 
-  pp.readWord1 = function() {
+  pp.readWord1 = function $readWord1() {
     this.containsEsc = false;
     var word = "", first = true, chunkStart = this.pos;
     var astral = this.options.ecmaVersion >= 6;
@@ -13719,7 +13717,7 @@ if (true) {
   // Read an identifier or keyword token. Will check for reserved
   // words when necessary.
 
-  pp.readWord = function() {
+  pp.readWord = function $readWord() {
     var word = this.readWord1();
     var type = types$1.name;
     if (this.keywords.test(word)) {
@@ -13952,13 +13950,13 @@ function OutputLine(parent) {
   this.__items = [];
 }
 
-OutputLine.prototype.clone_empty = function() {
+OutputLine.prototype.clone_empty = function $clone_empty() {
   var line = new OutputLine(this.__parent);
   line.set_indent(this.__indent_count, this.__alignment_count);
   return line;
 };
 
-OutputLine.prototype.item = function(index) {
+OutputLine.prototype.item = function $item(index) {
   if (index < 0) {
     return this.__items[this.__items.length + index];
   } else {
@@ -13966,7 +13964,7 @@ OutputLine.prototype.item = function(index) {
   }
 };
 
-OutputLine.prototype.has_match = function(pattern) {
+OutputLine.prototype.has_match = function $has_match(pattern) {
   for (var lastCheckedOutput = this.__items.length - 1; lastCheckedOutput >= 0; lastCheckedOutput--) {
     if (this.__items[lastCheckedOutput].match(pattern)) {
       return true;
@@ -13975,7 +13973,7 @@ OutputLine.prototype.has_match = function(pattern) {
   return false;
 };
 
-OutputLine.prototype.set_indent = function(indent, alignment) {
+OutputLine.prototype.set_indent = function $set_indent(indent, alignment) {
   if (this.is_empty()) {
     this.__indent_count = indent || 0;
     this.__alignment_count = alignment || 0;
@@ -13983,7 +13981,7 @@ OutputLine.prototype.set_indent = function(indent, alignment) {
   }
 };
 
-OutputLine.prototype._set_wrap_point = function() {
+OutputLine.prototype._set_wrap_point = function $_set_wrap_point() {
   if (this.__parent.wrap_line_length) {
     this.__wrap_point_index = this.__items.length;
     this.__wrap_point_character_count = this.__character_count;
@@ -13992,13 +13990,13 @@ OutputLine.prototype._set_wrap_point = function() {
   }
 };
 
-OutputLine.prototype._should_wrap = function() {
+OutputLine.prototype._should_wrap = function $_should_wrap() {
   return this.__wrap_point_index &&
     this.__character_count > this.__parent.wrap_line_length &&
     this.__wrap_point_character_count > this.__parent.next_line.__character_count;
 };
 
-OutputLine.prototype._allow_wrap = function() {
+OutputLine.prototype._allow_wrap = function $_allow_wrap() {
   if (this._should_wrap()) {
     this.__parent.add_new_line();
     var next = this.__parent.current_line;
@@ -14018,11 +14016,11 @@ OutputLine.prototype._allow_wrap = function() {
   return false;
 };
 
-OutputLine.prototype.is_empty = function() {
+OutputLine.prototype.is_empty = function $is_empty() {
   return this.__items.length === 0;
 };
 
-OutputLine.prototype.last = function() {
+OutputLine.prototype.last = function $last() {
   if (!this.is_empty()) {
     return this.__items[this.__items.length - 1];
   } else {
@@ -14030,7 +14028,7 @@ OutputLine.prototype.last = function() {
   }
 };
 
-OutputLine.prototype.push = function(item) {
+OutputLine.prototype.push = function $push(item) {
   this.__items.push(item);
   var last_newline_index = item.lastIndexOf('\n');
   if (last_newline_index !== -1) {
@@ -14040,7 +14038,7 @@ OutputLine.prototype.push = function(item) {
   }
 };
 
-OutputLine.prototype.pop = function() {
+OutputLine.prototype.pop = function $pop() {
   var item = null;
   if (!this.is_empty()) {
     item = this.__items.pop();
@@ -14050,26 +14048,26 @@ OutputLine.prototype.pop = function() {
 };
 
 
-OutputLine.prototype._remove_indent = function() {
+OutputLine.prototype._remove_indent = function $_remove_indent() {
   if (this.__indent_count > 0) {
     this.__indent_count -= 1;
     this.__character_count -= this.__parent.indent_size;
   }
 };
 
-OutputLine.prototype._remove_wrap_indent = function() {
+OutputLine.prototype._remove_wrap_indent = function $_remove_wrap_indent() {
   if (this.__wrap_point_indent_count > 0) {
     this.__wrap_point_indent_count -= 1;
   }
 };
-OutputLine.prototype.trim = function() {
+OutputLine.prototype.trim = function $trim() {
   while (this.last() === ' ') {
     this.__items.pop();
     this.__character_count -= 1;
   }
 };
 
-OutputLine.prototype.toString = function() {
+OutputLine.prototype.toString = function $toString() {
   var result = '';
   if (this.is_empty()) {
     if (this.__parent.indent_empty_lines) {
@@ -14100,7 +14098,7 @@ function IndentStringCache(options, baseIndentString) {
   this.__base_string_length = baseIndentString.length;
 }
 
-IndentStringCache.prototype.get_indent_size = function(indent, column) {
+IndentStringCache.prototype.get_indent_size = function $get_indent_size(indent, column) {
   var result = this.__base_string_length;
   column = column || 0;
   if (indent < 0) {
@@ -14111,7 +14109,7 @@ IndentStringCache.prototype.get_indent_size = function(indent, column) {
   return result;
 };
 
-IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
+IndentStringCache.prototype.get_indent_string = function $get_indent_string(indent_level, column) {
   var result = this.__base_string;
   column = column || 0;
   if (indent_level < 0) {
@@ -14124,13 +14122,13 @@ IndentStringCache.prototype.get_indent_string = function(indent_level, column) {
   return result;
 };
 
-IndentStringCache.prototype.__ensure_cache = function(column) {
+IndentStringCache.prototype.__ensure_cache = function $__ensure_cache(column) {
   while (column >= this.__cache.length) {
     this.__add_column();
   }
 };
 
-IndentStringCache.prototype.__add_column = function() {
+IndentStringCache.prototype.__add_column = function $__add_column() {
   var column = this.__cache.length;
   var indent = 0;
   var result = '';
@@ -14164,29 +14162,29 @@ function Output(options, baseIndentString) {
   this.__add_outputline();
 }
 
-Output.prototype.__add_outputline = function() {
+Output.prototype.__add_outputline = function $__add_outputline() {
   this.previous_line = this.current_line;
   this.current_line = this.next_line.clone_empty();
   this.__lines.push(this.current_line);
 };
 
-Output.prototype.get_line_number = function() {
+Output.prototype.get_line_number = function $get_line_number() {
   return this.__lines.length;
 };
 
-Output.prototype.get_indent_string = function(indent, column) {
+Output.prototype.get_indent_string = function $get_indent_string(indent, column) {
   return this.__indent_cache.get_indent_string(indent, column);
 };
 
-Output.prototype.get_indent_size = function(indent, column) {
+Output.prototype.get_indent_size = function $get_indent_size(indent, column) {
   return this.__indent_cache.get_indent_size(indent, column);
 };
 
-Output.prototype.is_empty = function() {
+Output.prototype.is_empty = function $is_empty() {
   return !this.previous_line && this.current_line.is_empty();
 };
 
-Output.prototype.add_new_line = function(force_newline) {
+Output.prototype.add_new_line = function $add_new_line(force_newline) {
   // never newline at the start of file
   // otherwise, newline only if we didn't just add one or we're forced
   if (this.is_empty() ||
@@ -14202,7 +14200,7 @@ Output.prototype.add_new_line = function(force_newline) {
   return true;
 };
 
-Output.prototype.get_code = function(eol) {
+Output.prototype.get_code = function $get_code(eol) {
   this.trim(true);
 
   // handle some edge cases where the last tokens
@@ -14227,11 +14225,11 @@ Output.prototype.get_code = function(eol) {
   return sweet_code;
 };
 
-Output.prototype.set_wrap_point = function() {
+Output.prototype.set_wrap_point = function $set_wrap_point() {
   this.current_line._set_wrap_point();
 };
 
-Output.prototype.set_indent = function(indent, alignment) {
+Output.prototype.set_indent = function $set_indent(indent, alignment) {
   indent = indent || 0;
   alignment = alignment || 0;
 
@@ -14248,7 +14246,7 @@ Output.prototype.set_indent = function(indent, alignment) {
   return false;
 };
 
-Output.prototype.add_raw_token = function(token) {
+Output.prototype.add_raw_token = function $add_raw_token(token) {
   for (var x = 0; x < token.newlines; x++) {
     this.__add_outputline();
   }
@@ -14260,7 +14258,7 @@ Output.prototype.add_raw_token = function(token) {
   this.previous_token_wrapped = false;
 };
 
-Output.prototype.add_token = function(printable_token) {
+Output.prototype.add_token = function $add_token(printable_token) {
   this.__add_space_before_token();
   this.current_line.push(printable_token);
   this.space_before_token = false;
@@ -14268,7 +14266,7 @@ Output.prototype.add_token = function(printable_token) {
   this.previous_token_wrapped = this.current_line._allow_wrap();
 };
 
-Output.prototype.__add_space_before_token = function() {
+Output.prototype.__add_space_before_token = function $__add_space_before_token() {
   if (this.space_before_token && !this.just_added_newline()) {
     if (!this.non_breaking_space) {
       this.set_wrap_point();
@@ -14277,7 +14275,7 @@ Output.prototype.__add_space_before_token = function() {
   }
 };
 
-Output.prototype.remove_indent = function(index) {
+Output.prototype.remove_indent = function $remove_indent(index) {
   var output_length = this.__lines.length;
   while (index < output_length) {
     this.__lines[index]._remove_indent();
@@ -14286,7 +14284,7 @@ Output.prototype.remove_indent = function(index) {
   this.current_line._remove_wrap_indent();
 };
 
-Output.prototype.trim = function(eat_newlines) {
+Output.prototype.trim = function $trim(eat_newlines) {
   eat_newlines = (eat_newlines === undefined) ? false : eat_newlines;
 
   this.current_line.trim();
@@ -14302,16 +14300,16 @@ Output.prototype.trim = function(eat_newlines) {
     this.__lines[this.__lines.length - 2] : null;
 };
 
-Output.prototype.just_added_newline = function() {
+Output.prototype.just_added_newline = function $just_added_newline() {
   return this.current_line.is_empty();
 };
 
-Output.prototype.just_added_blankline = function() {
+Output.prototype.just_added_blankline = function $just_added_blankline() {
   return this.is_empty() ||
     (this.current_line.is_empty() && this.previous_line.is_empty());
 };
 
-Output.prototype.ensure_empty_line_above = function(starts_with, ends_with) {
+Output.prototype.ensure_empty_line_above = function $ensure_empty_line_above(starts_with, ends_with) {
   var index = this.__lines.length - 2;
   while (index >= 0) {
     var potentialEmptyLine = this.__lines[index];
@@ -14471,7 +14469,7 @@ function Options(options, merge_child_field) {
   this.templating = this._get_selection_list('templating', ['auto', 'none', 'angular', 'django', 'erb', 'handlebars', 'php', 'smarty'], ['auto']);
 }
 
-Options.prototype._get_array = function(name, default_value) {
+Options.prototype._get_array = function $_get_array(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || [];
   if (typeof option_value === 'object') {
@@ -14484,13 +14482,13 @@ Options.prototype._get_array = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_boolean = function(name, default_value) {
+Options.prototype._get_boolean = function $_get_boolean(name, default_value) {
   var option_value = this.raw_options[name];
   var result = option_value === undefined ? !!default_value : !!option_value;
   return result;
 };
 
-Options.prototype._get_characters = function(name, default_value) {
+Options.prototype._get_characters = function $_get_characters(name, default_value) {
   var option_value = this.raw_options[name];
   var result = default_value || '';
   if (typeof option_value === 'string') {
@@ -14499,7 +14497,7 @@ Options.prototype._get_characters = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_number = function(name, default_value) {
+Options.prototype._get_number = function $_get_number(name, default_value) {
   var option_value = this.raw_options[name];
   default_value = parseInt(default_value, 10);
   if (isNaN(default_value)) {
@@ -14512,7 +14510,7 @@ Options.prototype._get_number = function(name, default_value) {
   return result;
 };
 
-Options.prototype._get_selection = function(name, selection_list, default_value) {
+Options.prototype._get_selection = function $_get_selection(name, selection_list, default_value) {
   var result = this._get_selection_list(name, selection_list, default_value);
   if (result.length !== 1) {
     throw new Error(
@@ -14524,7 +14522,7 @@ Options.prototype._get_selection = function(name, selection_list, default_value)
 };
 
 
-Options.prototype._get_selection_list = function(name, selection_list, default_value) {
+Options.prototype._get_selection_list = function $_get_selection_list(name, selection_list, default_value) {
   if (!selection_list || selection_list.length === 0) {
     throw new Error("Selection list cannot be empty.");
   }
@@ -14544,7 +14542,7 @@ Options.prototype._get_selection_list = function(name, selection_list, default_v
   return result;
 };
 
-Options.prototype._is_valid_selection = function(result, selection_list) {
+Options.prototype._is_valid_selection = function $_is_valid_selection(result, selection_list) {
   return result.length && selection_list.length &&
     !result.some(function(item) { return selection_list.indexOf(item) === -1; });
 };
@@ -14634,21 +14632,21 @@ function InputScanner(input_string) {
   this.__position = 0;
 }
 
-InputScanner.prototype.restart = function() {
+InputScanner.prototype.restart = function $restart() {
   this.__position = 0;
 };
 
-InputScanner.prototype.back = function() {
+InputScanner.prototype.back = function $back() {
   if (this.__position > 0) {
     this.__position -= 1;
   }
 };
 
-InputScanner.prototype.hasNext = function() {
+InputScanner.prototype.hasNext = function $hasNext() {
   return this.__position < this.__input_length;
 };
 
-InputScanner.prototype.next = function() {
+InputScanner.prototype.next = function $next() {
   var val = null;
   if (this.hasNext()) {
     val = this.__input.charAt(this.__position);
@@ -14657,7 +14655,7 @@ InputScanner.prototype.next = function() {
   return val;
 };
 
-InputScanner.prototype.peek = function(index) {
+InputScanner.prototype.peek = function $peek(index) {
   var val = null;
   index = index || 0;
   index += this.__position;
@@ -14674,7 +14672,7 @@ InputScanner.prototype.peek = function(index) {
 // must get the match and check the index of the match.
 // If sticky is supported and set, this method will use it.
 // Otherwise it will check that global is set, and fall back to the slower method.
-InputScanner.prototype.__match = function(pattern, index) {
+InputScanner.prototype.__match = function $__match(pattern, index) {
   pattern.lastIndex = index;
   var pattern_match = pattern.exec(this.__input);
 
@@ -14687,7 +14685,7 @@ InputScanner.prototype.__match = function(pattern, index) {
   return pattern_match;
 };
 
-InputScanner.prototype.test = function(pattern, index) {
+InputScanner.prototype.test = function $test(pattern, index) {
   index = index || 0;
   index += this.__position;
 
@@ -14698,14 +14696,14 @@ InputScanner.prototype.test = function(pattern, index) {
   }
 };
 
-InputScanner.prototype.testChar = function(pattern, index) {
+InputScanner.prototype.testChar = function $testChar(pattern, index) {
   // test one character regex match
   var val = this.peek(index);
   pattern.lastIndex = 0;
   return val !== null && pattern.test(val);
 };
 
-InputScanner.prototype.match = function(pattern) {
+InputScanner.prototype.match = function $match(pattern) {
   var pattern_match = this.__match(pattern, this.__position);
   if (pattern_match) {
     this.__position += pattern_match[0].length;
@@ -14715,7 +14713,7 @@ InputScanner.prototype.match = function(pattern) {
   return pattern_match;
 };
 
-InputScanner.prototype.read = function(starting_pattern, until_pattern, until_after) {
+InputScanner.prototype.read = function $read(starting_pattern, until_pattern, until_after) {
   var val = '';
   var match;
   if (starting_pattern) {
@@ -14730,7 +14728,7 @@ InputScanner.prototype.read = function(starting_pattern, until_pattern, until_af
   return val;
 };
 
-InputScanner.prototype.readUntil = function(pattern, until_after) {
+InputScanner.prototype.readUntil = function $readUntil(pattern, until_after) {
   var val = '';
   var match_index = this.__position;
   pattern.lastIndex = this.__position;
@@ -14749,11 +14747,11 @@ InputScanner.prototype.readUntil = function(pattern, until_after) {
   return val;
 };
 
-InputScanner.prototype.readUntilAfter = function(pattern) {
+InputScanner.prototype.readUntilAfter = function $readUntilAfter(pattern) {
   return this.readUntil(pattern, true);
 };
 
-InputScanner.prototype.get_regexp = function(pattern, match_from) {
+InputScanner.prototype.get_regexp = function $get_regexp(pattern, match_from) {
   var result = null;
   var flags = 'g';
   if (match_from && regexp_has_sticky) {
@@ -14769,19 +14767,19 @@ InputScanner.prototype.get_regexp = function(pattern, match_from) {
   return result;
 };
 
-InputScanner.prototype.get_literal_regexp = function(literal_string) {
+InputScanner.prototype.get_literal_regexp = function $get_literal_regexp(literal_string) {
   return RegExp(literal_string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 };
 
 /* css beautifier legacy helpers */
-InputScanner.prototype.peekUntilAfter = function(pattern) {
+InputScanner.prototype.peekUntilAfter = function $peekUntilAfter(pattern) {
   var start = this.__position;
   var val = this.readUntilAfter(pattern);
   this.__position = start;
   return val;
 };
 
-InputScanner.prototype.lookBack = function(testVal) {
+InputScanner.prototype.lookBack = function $lookBack(testVal) {
   var start = this.__position - 1;
   return start >= testVal.length && this.__input.substring(start - testVal.length, start)
     .toLowerCase() === testVal;
@@ -14835,7 +14833,7 @@ var TOKEN = {
   EOF: 'TK_EOF'
 };
 
-var Tokenizer = function(input_string, options) {
+var Tokenizer = function $Tokenizer(input_string, options) {
   this._input = new InputScanner(input_string);
   this._options = options || {};
   this.__tokens = null;
@@ -14844,7 +14842,7 @@ var Tokenizer = function(input_string, options) {
   this._patterns.whitespace = new WhitespacePattern(this._input);
 };
 
-Tokenizer.prototype.tokenize = function() {
+Tokenizer.prototype.tokenize = function $tokenize() {
   this._input.restart();
   this.__tokens = new TokenStream();
 
@@ -14891,13 +14889,13 @@ Tokenizer.prototype.tokenize = function() {
 };
 
 
-Tokenizer.prototype._is_first_token = function() {
+Tokenizer.prototype._is_first_token = function $_is_first_token() {
   return this.__tokens.isEmpty();
 };
 
-Tokenizer.prototype._reset = function() {};
+Tokenizer.prototype._reset = function $_reset() {};
 
-Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // jshint unused:false
+Tokenizer.prototype._get_next_token = function $_get_next_token(previous_token, open_token) { // jshint unused:false
   this._readWhitespace();
   var resulting_string = this._input.read(/.+/g);
   if (resulting_string) {
@@ -14907,26 +14905,26 @@ Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // 
   }
 };
 
-Tokenizer.prototype._is_comment = function(current_token) { // jshint unused:false
+Tokenizer.prototype._is_comment = function $_is_comment(current_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._is_opening = function(current_token) { // jshint unused:false
+Tokenizer.prototype._is_opening = function $_is_opening(current_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._is_closing = function(current_token, open_token) { // jshint unused:false
+Tokenizer.prototype._is_closing = function $_is_closing(current_token, open_token) { // jshint unused:false
   return false;
 };
 
-Tokenizer.prototype._create_token = function(type, text) {
+Tokenizer.prototype._create_token = function $_create_token(type, text) {
   var token = new Token(type, text,
     this._patterns.whitespace.newline_count,
     this._patterns.whitespace.whitespace_before_token);
   return token;
 };
 
-Tokenizer.prototype._readWhitespace = function() {
+Tokenizer.prototype._readWhitespace = function $_readWhitespace() {
   return this._patterns.whitespace.read();
 };
 
@@ -14978,19 +14976,19 @@ function TokenStream(parent_token) {
   this.__parent_token = parent_token;
 }
 
-TokenStream.prototype.restart = function() {
+TokenStream.prototype.restart = function $restart() {
   this.__position = 0;
 };
 
-TokenStream.prototype.isEmpty = function() {
+TokenStream.prototype.isEmpty = function $isEmpty() {
   return this.__tokens_length === 0;
 };
 
-TokenStream.prototype.hasNext = function() {
+TokenStream.prototype.hasNext = function $hasNext() {
   return this.__position < this.__tokens_length;
 };
 
-TokenStream.prototype.next = function() {
+TokenStream.prototype.next = function $next() {
   var val = null;
   if (this.hasNext()) {
     val = this.__tokens[this.__position];
@@ -14999,7 +14997,7 @@ TokenStream.prototype.next = function() {
   return val;
 };
 
-TokenStream.prototype.peek = function(index) {
+TokenStream.prototype.peek = function $peek(index) {
   var val = null;
   index = index || 0;
   index += this.__position;
@@ -15009,7 +15007,7 @@ TokenStream.prototype.peek = function(index) {
   return val;
 };
 
-TokenStream.prototype.add = function(token) {
+TokenStream.prototype.add = function $add(token) {
   if (this.__parent_token) {
     token.parent = this.__parent_token;
   }
@@ -15069,7 +15067,7 @@ function WhitespacePattern(input_scanner, parent) {
 }
 WhitespacePattern.prototype = new Pattern();
 
-WhitespacePattern.prototype.__set_whitespace_patterns = function(whitespace_chars, newline_chars) {
+WhitespacePattern.prototype.__set_whitespace_patterns = function $__set_whitespace_patterns(whitespace_chars, newline_chars) {
   whitespace_chars += '\\t ';
   newline_chars += '\\n\\r';
 
@@ -15079,7 +15077,7 @@ WhitespacePattern.prototype.__set_whitespace_patterns = function(whitespace_char
     '\\r\\n|[' + newline_chars + ']');
 };
 
-WhitespacePattern.prototype.read = function() {
+WhitespacePattern.prototype.read = function $read() {
   this.newline_count = 0;
   this.whitespace_before_token = '';
 
@@ -15095,18 +15093,18 @@ WhitespacePattern.prototype.read = function() {
   return resulting_string;
 };
 
-WhitespacePattern.prototype.matching = function(whitespace_chars, newline_chars) {
+WhitespacePattern.prototype.matching = function $matching(whitespace_chars, newline_chars) {
   var result = this._create();
   result.__set_whitespace_patterns(whitespace_chars, newline_chars);
   result._update();
   return result;
 };
 
-WhitespacePattern.prototype._create = function() {
+WhitespacePattern.prototype._create = function $_create() {
   return new WhitespacePattern(this._input, this);
 };
 
-WhitespacePattern.prototype.__split = function(regexp, input_string) {
+WhitespacePattern.prototype.__split = function $__split(regexp, input_string) {
   regexp.lastIndex = 0;
   var start_index = 0;
   var result = [];
@@ -15180,7 +15178,7 @@ function Pattern(input_scanner, parent) {
   }
 }
 
-Pattern.prototype.read = function() {
+Pattern.prototype.read = function $read() {
   var result = this._input.read(this._starting_pattern);
   if (!this._starting_pattern || result) {
     result += this._input.read(this._match_pattern, this._until_pattern, this._until_after);
@@ -15188,11 +15186,11 @@ Pattern.prototype.read = function() {
   return result;
 };
 
-Pattern.prototype.read_match = function() {
+Pattern.prototype.read_match = function $read_match() {
   return this._input.match(this._match_pattern);
 };
 
-Pattern.prototype.until_after = function(pattern) {
+Pattern.prototype.until_after = function $until_after(pattern) {
   var result = this._create();
   result._until_after = true;
   result._until_pattern = this._input.get_regexp(pattern);
@@ -15200,7 +15198,7 @@ Pattern.prototype.until_after = function(pattern) {
   return result;
 };
 
-Pattern.prototype.until = function(pattern) {
+Pattern.prototype.until = function $until(pattern) {
   var result = this._create();
   result._until_after = false;
   result._until_pattern = this._input.get_regexp(pattern);
@@ -15208,25 +15206,25 @@ Pattern.prototype.until = function(pattern) {
   return result;
 };
 
-Pattern.prototype.starting_with = function(pattern) {
+Pattern.prototype.starting_with = function $starting_with(pattern) {
   var result = this._create();
   result._starting_pattern = this._input.get_regexp(pattern, true);
   result._update();
   return result;
 };
 
-Pattern.prototype.matching = function(pattern) {
+Pattern.prototype.matching = function $matching(pattern) {
   var result = this._create();
   result._match_pattern = this._input.get_regexp(pattern, true);
   result._update();
   return result;
 };
 
-Pattern.prototype._create = function() {
+Pattern.prototype._create = function $_create() {
   return new Pattern(this._input, this);
 };
 
-Pattern.prototype._update = function() {};
+Pattern.prototype._update = function $_update() {};
 
 module.exports.Pattern = Pattern;
 
@@ -15274,7 +15272,7 @@ function Directives(start_block_pattern, end_block_pattern) {
   this.__directives_end_ignore_pattern = new RegExp(start_block_pattern + /\sbeautify\signore:end\s/.source + end_block_pattern, 'g');
 }
 
-Directives.prototype.get_directives = function(text) {
+Directives.prototype.get_directives = function $get_directives(text) {
   if (!text.match(this.__directives_block_pattern)) {
     return null;
   }
@@ -15291,7 +15289,7 @@ Directives.prototype.get_directives = function(text) {
   return directives;
 };
 
-Directives.prototype.readIgnored = function(input) {
+Directives.prototype.readIgnored = function $readIgnored(input) {
   return input.readUntilAfter(this.__directives_end_ignore_pattern);
 };
 
@@ -15376,22 +15374,22 @@ function TemplatablePattern(input_scanner, parent) {
 }
 TemplatablePattern.prototype = new Pattern();
 
-TemplatablePattern.prototype._create = function() {
+TemplatablePattern.prototype._create = function $_create() {
   return new TemplatablePattern(this._input, this);
 };
 
-TemplatablePattern.prototype._update = function() {
+TemplatablePattern.prototype._update = function $_update() {
   this.__set_templated_pattern();
 };
 
-TemplatablePattern.prototype.disable = function(language) {
+TemplatablePattern.prototype.disable = function $disable(language) {
   var result = this._create();
   result._disabled[language] = true;
   result._update();
   return result;
 };
 
-TemplatablePattern.prototype.read_options = function(options) {
+TemplatablePattern.prototype.read_options = function $read_options(options) {
   var result = this._create();
   for (var language in template_names) {
     result._disabled[language] = options.templating.indexOf(language) === -1;
@@ -15400,14 +15398,14 @@ TemplatablePattern.prototype.read_options = function(options) {
   return result;
 };
 
-TemplatablePattern.prototype.exclude = function(language) {
+TemplatablePattern.prototype.exclude = function $exclude(language) {
   var result = this._create();
   result._excluded[language] = true;
   result._update();
   return result;
 };
 
-TemplatablePattern.prototype.read = function() {
+TemplatablePattern.prototype.read = function $read() {
   var result = '';
   if (this._match_pattern) {
     result = this._input.read(this._starting_pattern);
@@ -15431,7 +15429,7 @@ TemplatablePattern.prototype.read = function() {
   return result;
 };
 
-TemplatablePattern.prototype.__set_templated_pattern = function() {
+TemplatablePattern.prototype.__set_templated_pattern = function $__set_templated_pattern() {
   var items = [];
 
   if (!this._disabled.php) {
@@ -15464,7 +15462,7 @@ TemplatablePattern.prototype.__set_templated_pattern = function() {
   this.__template_pattern = this._input.get_regexp('(?:' + items.join('|') + ')');
 };
 
-TemplatablePattern.prototype._read_template = function() {
+TemplatablePattern.prototype._read_template = function $_read_template() {
   var resulting_string = '';
   var c = this._input.peek();
   if (c === '<') {
@@ -15567,7 +15565,7 @@ function style_html(html_source, options, js_beautify, css_beautify) {
 }
 
 module.exports = style_html;
-module.exports.defaultOptions = function() {
+module.exports.defaultOptions = function $defaultOptions() {
   return new Options();
 };
 
@@ -15614,7 +15612,7 @@ var TOKEN = (__nested_webpack_require_55153__(21).TOKEN);
 var lineBreak = /\r\n|[\r\n]/;
 var allLineBreaks = /\r\n|[\r\n]/g;
 
-var Printer = function(options, base_indent_string) { //handles input/output and some other printing functions
+var Printer = function $Printer(options, base_indent_string) { //handles input/output and some other printing functions
 
   this.indent_level = 0;
   this.alignment_size = 0;
@@ -15625,26 +15623,26 @@ var Printer = function(options, base_indent_string) { //handles input/output and
 
 };
 
-Printer.prototype.current_line_has_match = function(pattern) {
+Printer.prototype.current_line_has_match = function $current_line_has_match(pattern) {
   return this._output.current_line.has_match(pattern);
 };
 
-Printer.prototype.set_space_before_token = function(value, non_breaking) {
+Printer.prototype.set_space_before_token = function $set_space_before_token(value, non_breaking) {
   this._output.space_before_token = value;
   this._output.non_breaking_space = non_breaking;
 };
 
-Printer.prototype.set_wrap_point = function() {
+Printer.prototype.set_wrap_point = function $set_wrap_point() {
   this._output.set_indent(this.indent_level, this.alignment_size);
   this._output.set_wrap_point();
 };
 
 
-Printer.prototype.add_raw_token = function(token) {
+Printer.prototype.add_raw_token = function $add_raw_token(token) {
   this._output.add_raw_token(token);
 };
 
-Printer.prototype.print_preserved_newlines = function(raw_token) {
+Printer.prototype.print_preserved_newlines = function $print_preserved_newlines(raw_token) {
   var newlines = 0;
   if (raw_token.type !== TOKEN.TEXT && raw_token.previous.type !== TOKEN.TEXT) {
     newlines = raw_token.newlines ? 1 : 0;
@@ -15660,7 +15658,7 @@ Printer.prototype.print_preserved_newlines = function(raw_token) {
   return newlines !== 0;
 };
 
-Printer.prototype.traverse_whitespace = function(raw_token) {
+Printer.prototype.traverse_whitespace = function $traverse_whitespace(raw_token) {
   if (raw_token.whitespace_before || raw_token.newlines) {
     if (!this.print_preserved_newlines(raw_token)) {
       this._output.space_before_token = true;
@@ -15670,33 +15668,33 @@ Printer.prototype.traverse_whitespace = function(raw_token) {
   return false;
 };
 
-Printer.prototype.previous_token_wrapped = function() {
+Printer.prototype.previous_token_wrapped = function $previous_token_wrapped() {
   return this._output.previous_token_wrapped;
 };
 
-Printer.prototype.print_newline = function(force) {
+Printer.prototype.print_newline = function $print_newline(force) {
   this._output.add_new_line(force);
 };
 
-Printer.prototype.print_token = function(token) {
+Printer.prototype.print_token = function $print_token(token) {
   if (token.text) {
     this._output.set_indent(this.indent_level, this.alignment_size);
     this._output.add_token(token.text);
   }
 };
 
-Printer.prototype.indent = function() {
+Printer.prototype.indent = function $indent() {
   this.indent_level++;
 };
 
-Printer.prototype.deindent = function() {
+Printer.prototype.deindent = function $deindent() {
   if (this.indent_level > 0) {
     this.indent_level--;
     this._output.set_indent(this.indent_level, this.alignment_size);
   }
 };
 
-Printer.prototype.get_full_indent = function(level) {
+Printer.prototype.get_full_indent = function $get_full_indent(level) {
   level = this.indent_level + (level || 0);
   if (level < 1) {
     return '';
@@ -15705,7 +15703,7 @@ Printer.prototype.get_full_indent = function(level) {
   return this._output.get_indent_string(level);
 };
 
-var get_type_attribute = function(start_token) {
+var get_type_attribute = function $get_type_attribute(start_token) {
   var result = null;
   var raw_token = start_token.next;
 
@@ -15724,7 +15722,7 @@ var get_type_attribute = function(start_token) {
   return result;
 };
 
-var get_custom_beautifier_name = function(tag_check, raw_token) {
+var get_custom_beautifier_name = function $get_custom_beautifier_name(tag_check, raw_token) {
   var typeAttribute = null;
   var result = null;
 
@@ -15772,16 +15770,16 @@ function TagStack(printer) {
   this._current_frame = null;
 }
 
-TagStack.prototype.get_parser_token = function() {
+TagStack.prototype.get_parser_token = function $get_parser_token() {
   return this._current_frame ? this._current_frame.parser_token : null;
 };
 
-TagStack.prototype.record_tag = function(parser_token) { //function to record a tag and its parent in this.tags Object
+TagStack.prototype.record_tag = function $record_tag(parser_token) { //function to record a tag and its parent in this.tags Object
   var new_frame = new TagFrame(this._current_frame, parser_token, this._printer.indent_level);
   this._current_frame = new_frame;
 };
 
-TagStack.prototype._try_pop_frame = function(frame) { //function to retrieve the opening tag to the corresponding closer
+TagStack.prototype._try_pop_frame = function $_try_pop_frame(frame) { //function to retrieve the opening tag to the corresponding closer
   var parser_token = null;
 
   if (frame) {
@@ -15793,7 +15791,7 @@ TagStack.prototype._try_pop_frame = function(frame) { //function to retrieve the
   return parser_token;
 };
 
-TagStack.prototype._get_frame = function(tag_list, stop_list) { //function to retrieve the opening tag to the corresponding closer
+TagStack.prototype._get_frame = function $_get_frame(tag_list, stop_list) { //function to retrieve the opening tag to the corresponding closer
   var frame = this._current_frame;
 
   while (frame) { //till we reach '' (the initial value);
@@ -15809,12 +15807,12 @@ TagStack.prototype._get_frame = function(tag_list, stop_list) { //function to re
   return frame;
 };
 
-TagStack.prototype.try_pop = function(tag, stop_list) { //function to retrieve the opening tag to the corresponding closer
+TagStack.prototype.try_pop = function $try_pop(tag, stop_list) { //function to retrieve the opening tag to the corresponding closer
   var frame = this._get_frame([tag], stop_list);
   return this._try_pop_frame(frame);
 };
 
-TagStack.prototype.indent_to_tag = function(tag_list) {
+TagStack.prototype.indent_to_tag = function $indent_to_tag(tag_list) {
   var frame = this._get_frame(tag_list);
   if (frame) {
     this._printer.indent_level = frame.indent_level;
@@ -15843,7 +15841,7 @@ function Beautifier(source_text, options, js_beautify, css_beautify) {
   this._is_wrap_attributes_preserve_aligned = (this._options.wrap_attributes === 'preserve-aligned');
 }
 
-Beautifier.prototype.beautify = function() {
+Beautifier.prototype.beautify = function $beautify() {
 
   // if disabled, return the input unchanged.
   if (this._options.disabled) {
@@ -15908,7 +15906,7 @@ Beautifier.prototype.beautify = function() {
   return sweet_code;
 };
 
-Beautifier.prototype._handle_control_flow_open = function(printer, raw_token) {
+Beautifier.prototype._handle_control_flow_open = function $_handle_control_flow_open(printer, raw_token) {
   var parser_token = {
     text: raw_token.text,
     type: raw_token.type
@@ -15924,7 +15922,7 @@ Beautifier.prototype._handle_control_flow_open = function(printer, raw_token) {
   return parser_token;
 };
 
-Beautifier.prototype._handle_control_flow_close = function(printer, raw_token) {
+Beautifier.prototype._handle_control_flow_close = function $_handle_control_flow_close(printer, raw_token) {
   var parser_token = {
     text: raw_token.text,
     type: raw_token.type
@@ -15940,7 +15938,7 @@ Beautifier.prototype._handle_control_flow_close = function(printer, raw_token) {
   return parser_token;
 };
 
-Beautifier.prototype._handle_tag_close = function(printer, raw_token, last_tag_token) {
+Beautifier.prototype._handle_tag_close = function $_handle_tag_close(printer, raw_token, last_tag_token) {
   var parser_token = {
     text: raw_token.text,
     type: raw_token.type
@@ -15978,7 +15976,7 @@ Beautifier.prototype._handle_tag_close = function(printer, raw_token, last_tag_t
   return parser_token;
 };
 
-Beautifier.prototype._handle_inside_tag = function(printer, raw_token, last_tag_token, last_token) {
+Beautifier.prototype._handle_inside_tag = function $_handle_inside_tag(printer, raw_token, last_tag_token, last_token) {
   var wrapped = last_tag_token.has_wrapped_attrs;
   var parser_token = {
     text: raw_token.text,
@@ -16029,7 +16027,7 @@ Beautifier.prototype._handle_inside_tag = function(printer, raw_token, last_tag_
   return parser_token;
 };
 
-Beautifier.prototype._handle_text = function(printer, raw_token, last_tag_token) {
+Beautifier.prototype._handle_text = function $_handle_text(printer, raw_token, last_tag_token) {
   var parser_token = {
     text: raw_token.text,
     type: 'TK_CONTENT'
@@ -16045,7 +16043,7 @@ Beautifier.prototype._handle_text = function(printer, raw_token, last_tag_token)
   return parser_token;
 };
 
-Beautifier.prototype._print_custom_beatifier_text = function(printer, raw_token, last_tag_token) {
+Beautifier.prototype._print_custom_beatifier_text = function $_print_custom_beatifier_text(printer, raw_token, last_tag_token) {
   var local = this;
   if (raw_token.text !== '') {
 
@@ -16059,7 +16057,7 @@ Beautifier.prototype._print_custom_beatifier_text = function(printer, raw_token,
     } else if (last_tag_token.custom_beautifier_name === 'css' && typeof this._css_beautify === 'function') {
       _beautifier = this._css_beautify;
     } else if (last_tag_token.custom_beautifier_name === 'html') {
-      _beautifier = function(html_source, options) {
+      _beautifier = function $_beautifier(html_source, options) {
         var beautifier = new Beautifier(html_source, options, local._js_beautify, local._css_beautify);
         return beautifier.beautify();
       };
@@ -16112,7 +16110,7 @@ Beautifier.prototype._print_custom_beatifier_text = function(printer, raw_token,
       if (_beautifier) {
 
         // call the Beautifier if avaliable
-        var Child_options = function() {
+        var Child_options = function $Child_options() {
           this.eol = '\n';
         };
         Child_options.prototype = this._options.raw_options;
@@ -16148,7 +16146,7 @@ Beautifier.prototype._print_custom_beatifier_text = function(printer, raw_token,
   }
 };
 
-Beautifier.prototype._handle_tag_open = function(printer, raw_token, last_tag_token, last_token, tokens) {
+Beautifier.prototype._handle_tag_open = function $_handle_tag_open(printer, raw_token, last_tag_token, last_token, tokens) {
   var parser_token = this._get_tag_open_token(raw_token);
 
   if ((last_tag_token.is_unformatted || last_tag_token.is_content_unformatted) &&
@@ -16192,7 +16190,7 @@ Beautifier.prototype._handle_tag_open = function(printer, raw_token, last_tag_to
   return parser_token;
 };
 
-var TagOpenParserToken = function(options, parent, raw_token) {
+var TagOpenParserToken = function $TagOpenParserToken(options, parent, raw_token) {
   this.parent = parent || null;
   this.text = '';
   this.type = 'TK_TAG_OPEN';
@@ -16265,7 +16263,7 @@ var TagOpenParserToken = function(options, parent, raw_token) {
   }
 };
 
-Beautifier.prototype._get_tag_open_token = function(raw_token) { //function to get a full tag and parse its type
+Beautifier.prototype._get_tag_open_token = function $_get_tag_open_token(raw_token) { //function to get a full tag and parse its type
   var parser_token = new TagOpenParserToken(this._options, this._tag_stack.get_parser_token(), raw_token);
 
   parser_token.alignment_size = this._options.wrap_attributes_indent_size;
@@ -16283,7 +16281,7 @@ Beautifier.prototype._get_tag_open_token = function(raw_token) { //function to g
   return parser_token;
 };
 
-Beautifier.prototype._set_tag_position = function(printer, raw_token, parser_token, last_tag_token, last_token) {
+Beautifier.prototype._set_tag_position = function $_set_tag_position(printer, raw_token, parser_token, last_tag_token, last_token) {
 
   if (!parser_token.is_empty_element) {
     if (parser_token.is_end_tag) { //this tag is a double tag so check for tag-ending
@@ -16377,7 +16375,7 @@ Beautifier.prototype._set_tag_position = function(printer, raw_token, parser_tok
   }
 };
 
-Beautifier.prototype._calcluate_parent_multiline = function(printer, parser_token) {
+Beautifier.prototype._calcluate_parent_multiline = function $_calcluate_parent_multiline(printer, parser_token) {
   if (parser_token.parent && printer._output.just_added_newline() &&
     !((parser_token.is_inline_element || parser_token.is_unformatted) && parser_token.parent.is_inline_element)) {
     parser_token.parent.multiline_content = true;
@@ -16388,7 +16386,7 @@ Beautifier.prototype._calcluate_parent_multiline = function(printer, parser_toke
 var p_closers = ['address', 'article', 'aside', 'blockquote', 'details', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'];
 var p_parent_excludes = ['a', 'audio', 'del', 'ins', 'map', 'noscript', 'video'];
 
-Beautifier.prototype._do_optional_end_element = function(parser_token) {
+Beautifier.prototype._do_optional_end_element = function $_do_optional_end_element(parser_token) {
   var result = null;
   // NOTE: cases of "if there is no more content in the parent element"
   // are handled automatically by the beautifier.
@@ -16655,7 +16653,7 @@ var TOKEN = {
 
 var directives_core = new Directives(/<\!--/, /-->/);
 
-var Tokenizer = function(input_string, options) {
+var Tokenizer = function $Tokenizer(input_string, options) {
   BaseTokenizer.call(this, input_string, options);
   this._current_tag_name = '';
 
@@ -16700,15 +16698,15 @@ var Tokenizer = function(input_string, options) {
 };
 Tokenizer.prototype = new BaseTokenizer();
 
-Tokenizer.prototype._is_comment = function(current_token) { // jshint unused:false
+Tokenizer.prototype._is_comment = function $_is_comment(current_token) { // jshint unused:false
   return false; //current_token.type === TOKEN.COMMENT || current_token.type === TOKEN.UNKNOWN;
 };
 
-Tokenizer.prototype._is_opening = function(current_token) {
+Tokenizer.prototype._is_opening = function $_is_opening(current_token) {
   return current_token.type === TOKEN.TAG_OPEN || current_token.type === TOKEN.CONTROL_FLOW_OPEN;
 };
 
-Tokenizer.prototype._is_closing = function(current_token, open_token) {
+Tokenizer.prototype._is_closing = function $_is_closing(current_token, open_token) {
   return (current_token.type === TOKEN.TAG_CLOSE &&
     (open_token && (
       ((current_token.text === '>' || current_token.text === '/>') && open_token.text[0] === '<') ||
@@ -16717,11 +16715,11 @@ Tokenizer.prototype._is_closing = function(current_token, open_token) {
     (current_token.text === '}' && open_token.text.endsWith('{')));
 };
 
-Tokenizer.prototype._reset = function() {
+Tokenizer.prototype._reset = function $_reset() {
   this._current_tag_name = '';
 };
 
-Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // jshint unused:false
+Tokenizer.prototype._get_next_token = function $_get_next_token(previous_token, open_token) { // jshint unused:false
   var token = null;
   this._readWhitespace();
   var c = this._input.peek();
@@ -16745,7 +16743,7 @@ Tokenizer.prototype._get_next_token = function(previous_token, open_token) { // 
   return token;
 };
 
-Tokenizer.prototype._read_comment_or_cdata = function(c) { // jshint unused:false
+Tokenizer.prototype._read_comment_or_cdata = function $_read_comment_or_cdata(c) { // jshint unused:false
   var token = null;
   var resulting_string = null;
   var directives = null;
@@ -16777,7 +16775,7 @@ Tokenizer.prototype._read_comment_or_cdata = function(c) { // jshint unused:fals
   return token;
 };
 
-Tokenizer.prototype._read_processing = function(c) { // jshint unused:false
+Tokenizer.prototype._read_processing = function $_read_processing(c) { // jshint unused:false
   var token = null;
   var resulting_string = null;
   var directives = null;
@@ -16798,7 +16796,7 @@ Tokenizer.prototype._read_processing = function(c) { // jshint unused:false
   return token;
 };
 
-Tokenizer.prototype._read_open = function(c, open_token) {
+Tokenizer.prototype._read_open = function $_read_open(c, open_token) {
   var resulting_string = null;
   var token = null;
   if (!open_token || open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
@@ -16815,7 +16813,7 @@ Tokenizer.prototype._read_open = function(c, open_token) {
   return token;
 };
 
-Tokenizer.prototype._read_open_handlebars = function(c, open_token) {
+Tokenizer.prototype._read_open_handlebars = function $_read_open_handlebars(c, open_token) {
   var resulting_string = null;
   var token = null;
   if (!open_token || open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
@@ -16833,7 +16831,7 @@ Tokenizer.prototype._read_open_handlebars = function(c, open_token) {
   return token;
 };
 
-Tokenizer.prototype._read_control_flows = function(c, open_token) {
+Tokenizer.prototype._read_control_flows = function $_read_control_flows(c, open_token) {
   var resulting_string = '';
   var token = null;
   // Only check for control flows if angular templating is set
@@ -16871,7 +16869,7 @@ Tokenizer.prototype._read_control_flows = function(c, open_token) {
 };
 
 
-Tokenizer.prototype._read_close = function(c, open_token) {
+Tokenizer.prototype._read_close = function $_read_close(c, open_token) {
   var resulting_string = null;
   var token = null;
   if (open_token && open_token.type === TOKEN.TAG_OPEN) {
@@ -16891,7 +16889,7 @@ Tokenizer.prototype._read_close = function(c, open_token) {
   return token;
 };
 
-Tokenizer.prototype._read_attribute = function(c, previous_token, open_token) {
+Tokenizer.prototype._read_attribute = function $_read_attribute(c, previous_token, open_token) {
   var token = null;
   var resulting_string = '';
   if (open_token && open_token.text[0] === '<') {
@@ -16921,7 +16919,7 @@ Tokenizer.prototype._read_attribute = function(c, previous_token, open_token) {
   return token;
 };
 
-Tokenizer.prototype._is_content_unformatted = function(tag_name) {
+Tokenizer.prototype._is_content_unformatted = function $_is_content_unformatted(tag_name) {
   // void_elements have no content and so cannot have unformatted content
   // script and style tags should always be read as unformatted content
   // finally content_unformatted and unformatted element contents are unformatted
@@ -16930,7 +16928,7 @@ Tokenizer.prototype._is_content_unformatted = function(tag_name) {
       this._options.unformatted.indexOf(tag_name) !== -1);
 };
 
-Tokenizer.prototype._read_raw_content = function(c, previous_token, open_token) { // jshint unused:false
+Tokenizer.prototype._read_raw_content = function $_read_raw_content(c, previous_token, open_token) { // jshint unused:false
   var resulting_string = '';
   if (open_token && open_token.text[0] === '{') {
     resulting_string = this.__patterns.handlebars_raw_close.read();
@@ -16951,7 +16949,7 @@ Tokenizer.prototype._read_raw_content = function(c, previous_token, open_token) 
   return null;
 };
 
-Tokenizer.prototype._read_script_and_style = function(c, previous_token) { // jshint unused:false 
+Tokenizer.prototype._read_script_and_style = function $_read_script_and_style(c, previous_token) { // jshint unused:false 
   if (previous_token.type === TOKEN.TAG_CLOSE && previous_token.opened.text[0] === '<' && previous_token.text[0] !== '/') {
     var tag_name = previous_token.opened.text.substr(1).toLowerCase();
     if (tag_name === 'script' || tag_name === 'style') {
@@ -16971,7 +16969,7 @@ Tokenizer.prototype._read_script_and_style = function(c, previous_token) { // js
   return null;
 };
 
-Tokenizer.prototype._read_content_word = function(c, open_token) {
+Tokenizer.prototype._read_content_word = function $_read_content_word(c, open_token) {
   var resulting_string = '';
   if (this._options.unformatted_content_delimiter) {
     if (c === this._options.unformatted_content_delimiter[0]) {
@@ -17038,7 +17036,7 @@ if (true) {
         var css_beautify = __webpack_require__(3);
 
         return {
-            html_beautify: function(html_source, options) {
+            html_beautify : function $html_beautify(html_source, options) {
                 return style_html(html_source, options, js_beautify.js_beautify, css_beautify.css_beautify);
             }
         };
@@ -17194,7 +17192,7 @@ function demystify(code) {
   pairs.forEach((x) => {
     x[1] = x[1].replace(/\.(.)/g, (y) => y.replace('.', '').toUpperCase());
   });
-  console.log(pairs);
+  //console.log(pairs);
   let replacers = Object.fromEntries(pairs);
   // Step 1: Parse the code into an AST
   const ast = acorn.parse(code, { ecmaVersion: 2020 });
@@ -17429,7 +17427,7 @@ function demystify(code) {
   };
 
   const nameLists = getLongNames();
-  console.log(nameLists);
+  //console.log(nameLists);
   for (const key in nameLists) {
     renameIdentifier(ast, key, `${nameLists[key].join('$')}$${key}`);
   }
@@ -17443,12 +17441,13 @@ function demystify(code) {
       '$1 : function __dollar' + '_sign__$1('
     )
     .replaceAll('__dollar' + '_sign__', '$');
-  //console.log(getPairs(output));
-  //fs.writeFileSync('result.js', output);
 
-  return output;
+
+  return prettier(output);
 }
 
+  //console.log(getPairs(output));
+  //fs.writeFileSync('result.js', output);
 
 globalThis.demystify = demystify;
 /******/ })()
