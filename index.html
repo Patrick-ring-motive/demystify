@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demystify - JavaScript Code Beautifier</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
         * {
             margin: 0;
@@ -64,19 +65,44 @@
             font-size: 1.1em;
         }
 
-        textarea {
+        .code-editor {
             flex: 1;
-            border: none;
-            padding: 20px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            resize: none;
+            overflow: auto;
             min-height: 500px;
+            background: #2d2d2d;
         }
 
-        textarea:focus {
-            outline: none;
+        .code-editor pre {
+            margin: 0 !important;
+            padding: 20px !important;
+            background: transparent !important;
+            min-height: 100%;
+        }
+
+        .code-editor code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+        }
+
+        .code-editor[contenteditable="true"]:focus {
+            outline: 2px solid #667eea;
+            outline-offset: -2px;
+        }
+
+        .code-editor[contenteditable="true"] {
+            caret-color: white;
+        }
+
+        .placeholder {
+            position: relative;
+        }
+
+        .placeholder:empty:before {
+            content: attr(data-placeholder);
+            color: #6c757d;
+            position: absolute;
+            pointer-events: none;
         }
 
         .controls {
@@ -140,7 +166,7 @@
                 font-size: 2em;
             }
 
-            textarea {
+            .code-editor {
                 min-height: 300px;
             }
         }
@@ -156,12 +182,16 @@
         <div class="editor-container">
             <div class="editor-panel">
                 <div class="panel-header">Input (Minified Code)</div>
-                <textarea id="input" placeholder="Paste your minified JavaScript code here..."></textarea>
+                <div class="code-editor" id="input-container">
+                    <pre><code class="language-javascript placeholder" id="input" contenteditable="true" spellcheck="false" data-placeholder="Paste your minified JavaScript code here..."></code></pre>
+                </div>
             </div>
 
             <div class="editor-panel">
                 <div class="panel-header">Output (Readable Code)</div>
-                <textarea id="output" placeholder="Your beautified code will appear here..." readonly></textarea>
+                <div class="code-editor" id="output-container">
+                    <pre><code class="language-javascript" id="output"></code></pre>
+                </div>
             </div>
         </div>
 
@@ -176,6 +206,8 @@
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="index.js"></script>
     <script>
         const inputEl = document.getElementById('input');
@@ -185,10 +217,16 @@
 
         // Sample code for demonstration
         const sampleCode = `function a(b,c){let d=0;for(let e=0;e<b.length;e++){d+=b[e]*c}return d}console.log(a([1,2,3],2));`;
-        inputEl.value = sampleCode;
+        inputEl.textContent = sampleCode;
+        Prism.highlightElement(inputEl);
+
+        // Handle input changes to update syntax highlighting
+        inputEl.addEventListener('input', () => {
+            Prism.highlightElement(inputEl);
+        });
 
         btnEl.addEventListener('click', () => {
-            const code = inputEl.value.trim();
+            const code = inputEl.textContent.trim();
             
             if (!code) {
                 showError('Please enter some code to demystify!');
@@ -204,7 +242,8 @@
                 setTimeout(() => {
                     try {
                         const result = demystify(code);
-                        outputEl.value = result;
+                        outputEl.textContent = result;
+                        Prism.highlightElement(outputEl);
                         btnEl.disabled = false;
                         btnEl.textContent = 'Demystify Code';
                     } catch (error) {
