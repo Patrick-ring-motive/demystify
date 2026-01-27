@@ -214,6 +214,7 @@
                     }
                 }, 100);
             } catch (error) {
+                console.warn(error);
                 showError(`Error: ${error.message}`);
                 btnEl.disabled = false;
                 btnEl.textContent = 'Demystify Code';
