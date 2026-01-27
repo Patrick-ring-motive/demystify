@@ -17236,9 +17236,18 @@ function demystify(code) {
     'generator',
     'await',
     'for',
+    'length',
+    'label',
+    'pos',
+    'prototype',
+    'yield',
+    'return',
+    'continue',
+    'break',
+    'void'
   ];
 
-  const isShort = (x) => /^[A-Za-z0-9$_]{1,2}[0-9_]*$/.test(x);
+  const isShort = (x) => x&&(/^[A-Za-z0-9$_]{1,2}[0-9_]*$/.test(x)||x?.length < 4);
 
   /**
    * Merged Refactor & Analysis Function
@@ -17447,6 +17456,8 @@ function demystify(code) {
 
   return prettier(output);
 }
+
+//let output = demystify(code);
 
 //console.log(getPairs(output));
 //fs.writeFileSync('result.js', output);
