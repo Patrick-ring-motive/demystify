@@ -107,6 +107,7 @@
 
         .controls {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .btn {
@@ -179,6 +180,10 @@
             <p class="tagline">Transform minified JavaScript into readable code</p>
         </header>
 
+        <div class="controls">
+            <button class="btn" id="demystifyBtn">Demystify Code</button>
+        </div>
+
         <div class="editor-container">
             <div class="editor-panel">
                 <div class="panel-header">Input (Minified Code)</div>
@@ -195,10 +200,6 @@
             </div>
         </div>
 
-        <div class="controls">
-            <button class="btn" id="demystifyBtn">Demystify Code</button>
-        </div>
-
         <div class="error" id="error"></div>
 
         <footer>
@@ -208,12 +209,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <script src="index.js"></script>
     <script>
         const inputEl = document.getElementById('input');
         const outputEl = document.getElementById('output');
         const btnEl = document.getElementById('demystifyBtn');
         const errorEl = document.getElementById('error');
+
+        // Initialize web worker
+        const worker = new Worker('worker.js');
+        let messageId = 0;
 
         // Sample code for demonstration
         const sampleCode = `function a(b,c){let d=0;for(let e=0;e<b.length;e++){d+=b[e]*c}return d}console.log(a([1,2,3],2));`;
@@ -223,6 +227,28 @@
         // Handle input changes to update syntax highlighting
         inputEl.addEventListener('input', () => {
             Prism.highlightElement(inputEl);
+        });
+
+        // Handle worker messages
+        worker.addEventListener('message', (e) => {
+            const { success, result, error } = e.data;
+            
+            if (success) {
+                outputEl.textContent = result;
+                Prism.highlightElement(outputEl);
+            } else {
+                showError(`Error: ${error}`);
+            }
+            
+            btnEl.disabled = false;
+            btnEl.textContent = 'Demystify Code';
+        });
+
+        // Handle worker errors
+        worker.addEventListener('error', (e) => {
+            showError(`Worker error: ${e.message}`);
+            btnEl.disabled = false;
+            btnEl.textContent = 'Demystify Code';
         });
 
         btnEl.addEventListener('click', () => {
@@ -236,28 +262,10 @@
             btnEl.disabled = true;
             btnEl.textContent = 'Processing...';
             errorEl.classList.remove('show');
+            outputEl.textContent = '';
 
-            try {
-                // Small delay to show processing state
-                setTimeout(() => {
-                    try {
-                        const result = demystify(code);
-                        outputEl.textContent = result;
-                        Prism.highlightElement(outputEl);
-                        btnEl.disabled = false;
-                        btnEl.textContent = 'Demystify Code';
-                    } catch (error) {
-                        showError(`Error: ${error.message}`);
-                        btnEl.disabled = false;
-                        btnEl.textContent = 'Demystify Code';
-                    }
-                }, 100);
-            } catch (error) {
-                console.warn(error);
-                showError(`Error: ${error.message}`);
-                btnEl.disabled = false;
-                btnEl.textContent = 'Demystify Code';
-            }
+            // Send to worker
+            worker.postMessage({ code, id: messageId++ });
         });
 
         function showError(message) {
