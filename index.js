@@ -17078,10 +17078,6 @@ if (true) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-//const fs = require('fs');
-
-//let code = String(fs.readFileSync('target.js'));
-
 function demystify(code) {
   const acorn = __webpack_require__(630);
   const walk = __webpack_require__(268);
@@ -17099,31 +17095,83 @@ function demystify(code) {
     const globalNameCounts = {}; // Tracks how many times a name has been used overall
     const scopeStack = [{}]; // Stack of identifier mappings { "oldName": "newName" }
 
+    // Helper to check if a name exists in any parent scope
+    function existsInParentScope(name) {
+      for (let i = scopeStack.length - 2; i >= 0; i--) {
+        if (scopeStack[i][name] !== undefined) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Helper to register a name in current scope
+    function registerName(name, node) {
+      const currentScope = scopeStack[scopeStack.length - 1];
+
+      // Check if this name shadows a parent scope variable
+      if (existsInParentScope(name)) {
+        globalNameCounts[name] = (globalNameCounts[name] || 0) + 1;
+        const newName = `${name}${globalNameCounts[name]}`;
+        currentScope[name] = newName;
+        if (node && node.name !== undefined) {
+          node.name = newName;
+        }
+      } else {
+        // First time or no collision
+        currentScope[name] = name;
+      }
+    }
+
     walk.ancestor(ast, {
       // 1. Entering a new scope (Function or Block)
-      // Note: In strict unminifying, every BlockStatement could be a scope (let/const)
       'FunctionDeclaration|FunctionExpression|ArrowFunctionExpression|BlockStatement'(
-        node
+        node,
+        state,
+        ancestors
       ) {
         scopeStack.push({});
+
+        // Handle function parameters (they belong to the function's scope)
+        if (
+          node.params &&
+          (node.type === 'FunctionDeclaration' ||
+            node.type === 'FunctionExpression' ||
+            node.type === 'ArrowFunctionExpression')
+        ) {
+          node.params.forEach((param) => {
+            if (param.type === 'Identifier') {
+              registerName(param.name, param);
+            }
+          });
+        }
+
+        // Handle function declaration name (it belongs to parent scope)
+        if (node.type === 'FunctionDeclaration' && node.id) {
+          const parentScope = scopeStack[scopeStack.length - 2];
+          if (parentScope && existsInParentScope(node.id.name)) {
+            globalNameCounts[node.id.name] =
+              (globalNameCounts[node.id.name] || 0) + 1;
+            const newName = `${node.id.name}${globalNameCounts[node.id.name]}`;
+            parentScope[node.id.name] = newName;
+            node.id.name = newName;
+          } else if (parentScope) {
+            parentScope[node.id.name] = node.id.name;
+          }
+        }
       },
 
-      // 2. Handle Declarations (Where the name is "born")
+      // 2. Handle Variable Declarations
       VariableDeclarator(node, state, ancestors) {
-        const name = node.id.name;
-        const currentScope = scopeStack[scopeStack.length - 1];
+        if (node.id && node.id.type === 'Identifier') {
+          registerName(node.id.name, node.id);
+        }
+      },
 
-        // If this name was already used globally or in an outer scope...
-        if (globalNameCounts[name] !== undefined) {
-          globalNameCounts[name]++;
-          const newName = `${name}${globalNameCounts[name]}`;
-
-          currentScope[name] = newName; // Register the mapping for this scope
-          node.id.name = newName; // Rename the declaration
-        } else {
-          // First time seeing this name
-          globalNameCounts[name] = 0;
-          currentScope[name] = name;
+      // Handle catch clause parameters
+      CatchClause(node) {
+        if (node.param && node.param.type === 'Identifier') {
+          registerName(node.param.name, node.param);
         }
       },
 
@@ -17131,22 +17179,42 @@ function demystify(code) {
       Identifier(node, state, ancestors) {
         const parent = ancestors[ancestors.length - 2];
 
-        // SAFETY: Use the check from our previous step to avoid renaming properties
+        // SAFETY: Avoid renaming properties, object keys, declarations
         const isProperty =
+          parent &&
           parent.type === 'MemberExpression' &&
           parent.property === node &&
           !parent.computed;
         const isObjectKey =
+          parent &&
           parent.type === 'Property' &&
           parent.key === node &&
           !parent.shorthand;
         const isDeclaration =
-          parent.type === 'VariableDeclarator' && parent.id === node;
+          parent && parent.type === 'VariableDeclarator' && parent.id === node;
+        const isFunctionParam =
+          parent &&
+          (parent.type === 'FunctionDeclaration' ||
+            parent.type === 'FunctionExpression' ||
+            parent.type === 'ArrowFunctionExpression') &&
+          parent.params &&
+          parent.params.includes(node);
+        const isFunctionId =
+          parent && parent.type === 'FunctionDeclaration' && parent.id === node;
+        const isCatchParam =
+          parent && parent.type === 'CatchClause' && parent.param === node;
 
-        if (!isProperty && !isObjectKey && !isDeclaration) {
+        if (
+          !isProperty &&
+          !isObjectKey &&
+          !isDeclaration &&
+          !isFunctionParam &&
+          !isFunctionId &&
+          !isCatchParam
+        ) {
           // Look up the name in the scope stack (from inner to outer)
           for (let i = scopeStack.length - 1; i >= 0; i--) {
-            if (scopeStack[i][node.name]) {
+            if (scopeStack[i][node.name] !== undefined) {
               node.name = scopeStack[i][node.name];
               break;
             }
@@ -17170,7 +17238,7 @@ function demystify(code) {
     try {
       let p = code
         .match(
-          /(let|var|const|[,])\s+[A-Za-z0-9$_]{1,3}[0-9_]*\s*=\s*(['"]?[A-Za-z$_][A-Za-z0-9.$_]{3,})/g
+          /(let|var|const|[,])\s+[A-Za-z0-9$_]{1,3}[0-9_]*\s*=\s*(?!class)(['"]?[A-Za-z$_][A-Za-z0-9.$_]{3,})/g
         )
         .map((x) =>
           x
@@ -17244,10 +17312,11 @@ function demystify(code) {
     'return',
     'continue',
     'break',
-    'void'
+    'void',
   ];
 
-  const isShort = (x) => x&&(/^[A-Za-z0-9$_]{1,2}[0-9_]*$/.test(x)||x?.length < 4);
+  const isShort = (x) =>
+    x && (/^(class)?\$?[A-Za-z0-9$_]{1,2}[0-9_]*$/.test(x) || x?.length < 4);
 
   /**
    * Merged Refactor & Analysis Function
@@ -17441,7 +17510,12 @@ function demystify(code) {
   const nameLists = getLongNames();
   //console.log(nameLists);
   for (const key in nameLists) {
-    renameIdentifier(ast, key, `${nameLists[key].join('$')}$${key}`);
+    // Clean invalid characters from the name parts
+    const cleanedName = nameLists[key]
+      .map((n) => n.replace(/[^a-zA-Z0-9$_]/g, ''))
+      .filter((n) => n.length > 0)
+      .join('$');
+    renameIdentifier(ast, key, cleanedName ? `${cleanedName}$${key}` : key);
   }
   const output = generate(ast)
     .replace(
@@ -17453,13 +17527,17 @@ function demystify(code) {
       '$1 : function __dollar' + '_sign__$1('
     )
     .replaceAll('__dollar' + '_sign__', '$');
-
+//console.log(getPairs(output));
   return prettier(output);
 }
 
+//const fs = require('fs');
+
+//let code = String(fs.readFileSync('target.js'));
+
 //let output = demystify(code);
 
-//console.log(getPairs(output));
+
 //fs.writeFileSync('result.js', output);
 
 globalThis.demystify = demystify;
