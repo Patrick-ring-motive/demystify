@@ -17078,10 +17078,9 @@ if (true) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+//const fs = require('fs');
 
-  //const fs = require('fs');
-
-  //let code = String(fs.readFileSync('target.js'));
+//let code = String(fs.readFileSync('target.js'));
 
 function demystify(code) {
   const acorn = __webpack_require__(630);
@@ -17164,27 +17163,31 @@ function demystify(code) {
     return ast;
   }
 
-
   code = prettier(code);
   const astCode = acorn.parse(code, { ecmaVersion: 2020 });
   code = prettier(generate(solveShadowing(astCode)));
   const getPairs = (code) => {
-    let p = code
-      .match(
-        /(let|var|const|[,])\s+[A-Za-z0-9$_]{1,3}[0-9_]*\s*=\s*(['"]?[A-Za-z$_][A-Za-z0-9.$_]{3,})/g
-      )
-      .map((x) =>
-        x
-          .replace(/['"]+/g, '')
-          .split('=')
-          .map((y) => y.trim().split(/\s+/).pop())
+    try {
+      let p = code
+        .match(
+          /(let|var|const|[,])\s+[A-Za-z0-9$_]{1,3}[0-9_]*\s*=\s*(['"]?[A-Za-z$_][A-Za-z0-9.$_]{3,})/g
+        )
+        .map((x) =>
+          x
+            .replace(/['"]+/g, '')
+            .split('=')
+            .map((y) => y.trim().split(/\s+/).pop())
+        );
+      p = p.filter(
+        (x) =>
+          p.findIndex((y) => x[0] == y[0]) ===
+          p.findLastIndex((z) => x[0] == z[0])
       );
-    p = p.filter(
-      (x) =>
-        p.findIndex((y) => x[0] == y[0]) ===
-        p.findLastIndex((z) => x[0] == z[0])
-    );
-    return p;
+      return p;
+    } catch (e) {
+      console.warn(e);
+      return [];
+    }
   };
   let pairs = getPairs(code).filter(
     (x) => x[1] !== 'function' && x[1][1] !== '.'
@@ -17442,13 +17445,13 @@ function demystify(code) {
     )
     .replaceAll('__dollar' + '_sign__', '$');
 
-
   return prettier(output);
 }
 
-  //console.log(getPairs(output));
-  //fs.writeFileSync('result.js', output);
+//console.log(getPairs(output));
+//fs.writeFileSync('result.js', output);
 
 globalThis.demystify = demystify;
+
 /******/ })()
 ;
