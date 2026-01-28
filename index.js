@@ -17313,10 +17313,51 @@ function demystify(code) {
     'continue',
     'break',
     'void',
-	'undefined',
-	'null',
-	'catch',
-	'throw'
+    'undefined',
+    'null',
+    'catch',
+    'throw',
+
+    'break',
+    'case',
+    'catch',
+    'class',
+    'const',
+    'continue',
+    'debugger',
+    'default',
+    'delete',
+    'do',
+    'else',
+    'export',
+    'extends',
+    'finally',
+    'for',
+    'function',
+    'if',
+    'import',
+    'in',
+    'instanceof',
+    'let',
+    'new',
+    'return',
+    'super',
+    'switch',
+    'this',
+    'throw',
+    'try',
+    'typeof',
+    'var',
+    'void',
+    'while',
+    'with',
+    'yield',
+    'implements',
+    'interface',
+    'package',
+    'private',
+    'protected',
+    'public',
   ];
 
   const isShort = (x) =>
@@ -17357,12 +17398,12 @@ function demystify(code) {
       const isSafeToRename = !isProperty && !isObjectKey && !isMethod;
 
       // --- YOUR RENAMING LOGIC ---
-      if (newName && isSafeToRename && oldName && node.name === oldName) {
+      if (isSafeToRename && oldName && node.name === oldName) {
         node.name = newName;
       }
 
       // --- YOUR FREQUENCY ANALYSIS LOGIC ---
-      if (node.name && !isShort(node.name) && !notNames.includes(node.name)) {
+      if (!isShort(node.name) && !notNames.includes(node.name)) {
         lastName = node.name;
       } else {
         // Only track frequencies for short names if they are actual variable usages
@@ -17380,7 +17421,7 @@ function demystify(code) {
       if (Array.isArray(node[key])) {
         node[key].forEach((child) => {
           // Keep your lastName update logic for array children
-          if (node.name &&
+          if (
             node.type === 'Identifier' &&
             !isShort(node.name) &&
             !notNames.includes(node.name)
@@ -17391,7 +17432,7 @@ function demystify(code) {
         });
       } else {
         // Keep your lastName update logic for object properties
-        if (node.name &&
+        if (
           node.type === 'Identifier' &&
           !isShort(node.name) &&
           !notNames.includes(node.name)
@@ -17449,7 +17490,7 @@ function demystify(code) {
 }*/
 
   for (const key in replacers) {
-    if (key && replacers[key]&&!notNames.includes(replacers[key])){
+    if (key && replacers[key] && !notNames.includes(replacers[key])) {
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
@@ -17464,7 +17505,7 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    if (key && replacers[key]&&!notNames.includes(replacers[key])){
+    if (key && replacers[key] && !notNames.includes(replacers[key])) {
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
@@ -17479,7 +17520,7 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    if (key && replacers[key]&&!notNames.includes(replacers[key])){
+    if (key && replacers[key] && !notNames.includes(replacers[key])) {
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
@@ -17498,7 +17539,7 @@ function demystify(code) {
       }
       names[obj] ??= [];
       for (const key in shortNames[obj]) {
-        if (x&&shortNames[obj][key] == x) {
+        if (shortNames[obj][key] == x) {
           names[obj].push(key);
         }
       }
@@ -17525,7 +17566,8 @@ function demystify(code) {
       .map((n) => n.replace(/[^a-zA-Z0-9$_]/g, ''))
       .filter((n) => n.length > 0)
       .join('$');
-    renameIdentifier(ast, key, cleanedName ? `${cleanedName}$${key}` : key);
+    if (cleanedName && key && !notNames.includes(cleanedName))
+      renameIdentifier(ast, key, cleanedName ? `${cleanedName}$${key}` : key);
   }
   const output = generate(ast)
     .replace(
@@ -17541,10 +17583,16 @@ function demystify(code) {
   return prettier(output);
 }
 
-//const fs = require('fs');
-//let code = String(fs.readFileSync('target.js'));
-//let output = demystify(code);
-//fs.writeFileSync('result.js', output);
+/*const fs = require('fs');
+let code = String(fs.readFileSync('target.js'));
+let output = demystify(code);
+fs.writeFileSync('result.js', output);
+
+console.log(
+  demystify(
+    `function a(b,c){let d="cheese";for(let e=0;e<b.length;e++){d+=b[e]*c}return d}console.log(a([1,2,3],2));`
+  )
+);*/
 
 globalThis.demystify = demystify;
 
