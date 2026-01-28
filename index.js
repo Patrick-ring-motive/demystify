@@ -17498,7 +17498,7 @@ function demystify(code) {
       }
       names[obj] ??= [];
       for (const key in shortNames[obj]) {
-        if (shortNames[obj][key] == x) {
+        if (x&&shortNames[obj][key] == x) {
           names[obj].push(key);
         }
       }
