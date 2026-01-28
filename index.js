@@ -17445,7 +17445,9 @@ function demystify(code) {
 }*/
 
   for (const key in replacers) {
-    renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    if (key && replacers[key]) {
+      renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    }
   }
 
   code = generate(ast);
@@ -17458,7 +17460,9 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    if (key && replacers[key]) {
+      renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    }
   }
 
   code = generate(ast);
@@ -17471,7 +17475,9 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    if (key && replacers[key]) {
+      renameIdentifier(ast, key, `${replacers[key]}$${key}`);
+    }
   }
   // Step 3: Generate the new code
 
@@ -17527,17 +17533,13 @@ function demystify(code) {
       '$1 : function __dollar' + '_sign__$1('
     )
     .replaceAll('__dollar' + '_sign__', '$');
-//console.log(getPairs(output));
+  //console.log(getPairs(output));
   return prettier(output);
 }
 
 //const fs = require('fs');
-
 //let code = String(fs.readFileSync('target.js'));
-
 //let output = demystify(code);
-
-
 //fs.writeFileSync('result.js', output);
 
 globalThis.demystify = demystify;
