@@ -17313,6 +17313,10 @@ function demystify(code) {
     'continue',
     'break',
     'void',
+	'undefined',
+	'null',
+	'catch',
+	'throw'
   ];
 
   const isShort = (x) =>
