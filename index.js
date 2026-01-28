@@ -17449,7 +17449,7 @@ function demystify(code) {
 }*/
 
   for (const key in replacers) {
-    if (key && replacers[key]) {
+    if (key && replacers[key]&&!notNames.includes(String(key))){
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
@@ -17464,7 +17464,7 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    if (key && replacers[key]) {
+    if (key && replacers[key]&&!notNames.includes(String(key))){
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
@@ -17479,7 +17479,7 @@ function demystify(code) {
 
   replacers = Object.fromEntries(pairs);
   for (const key in replacers) {
-    if (key && replacers[key]) {
+    if (key && replacers[key]&&!notNames.includes(String(key))){
       renameIdentifier(ast, key, `${replacers[key]}$${key}`);
     }
   }
