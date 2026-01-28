@@ -17357,12 +17357,12 @@ function demystify(code) {
       const isSafeToRename = !isProperty && !isObjectKey && !isMethod;
 
       // --- YOUR RENAMING LOGIC ---
-      if (isSafeToRename && oldName && node.name === oldName) {
+      if (newName && isSafeToRename && oldName && node.name === oldName) {
         node.name = newName;
       }
 
       // --- YOUR FREQUENCY ANALYSIS LOGIC ---
-      if (!isShort(node.name) && !notNames.includes(node.name)) {
+      if (node.name && !isShort(node.name) && !notNames.includes(node.name)) {
         lastName = node.name;
       } else {
         // Only track frequencies for short names if they are actual variable usages
@@ -17380,7 +17380,7 @@ function demystify(code) {
       if (Array.isArray(node[key])) {
         node[key].forEach((child) => {
           // Keep your lastName update logic for array children
-          if (
+          if (node.name &&
             node.type === 'Identifier' &&
             !isShort(node.name) &&
             !notNames.includes(node.name)
@@ -17391,7 +17391,7 @@ function demystify(code) {
         });
       } else {
         // Keep your lastName update logic for object properties
-        if (
+        if (node.name &&
           node.type === 'Identifier' &&
           !isShort(node.name) &&
           !notNames.includes(node.name)
