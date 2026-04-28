@@ -17236,10 +17236,10 @@ function demystify(code) {
   code = prettier(generate(solveShadowing(astCode)));
   const getPairs = (code) => {
     try {
-      let p = code
+      let p = (code
         .match(
           /(let|var|const|[,])\s+[A-Za-z0-9$_]{1,3}[0-9_]*\s*=\s*(?!class)(['"]?[A-Za-z$_][A-Za-z0-9.$_]{3,})/g
-        )
+        )||[])
         .map((x) =>
           x
             .replace(/['"]+/g, '')
@@ -17525,6 +17525,9 @@ function demystify(code) {
     .replace(
       /([$a-zA-Z_]+[$a-zA-Z0-9_]*)\s*:\s*function\s*\(/g,
       '$1 : function __dollar' + '_sign__$1('
+    ).replace(
+      /([$a-zA-Z_]+[$a-zA-Z0-9_]*)([^$a-zA-Z0-9_]+)function\s*\(/g,
+      '$1 $2 function __dollar' + '_sign__$1('
     )
     .replaceAll('__dollar' + '_sign__', '$');
 //console.log(getPairs(output));
